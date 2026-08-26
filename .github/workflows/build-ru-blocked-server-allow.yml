@@ -1,0 +1,100 @@
+name: Build filtered ru-blocked server allow
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/build-ru-blocked-server-allow.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+
+      - name: Download and filter current ru-blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            https://raw.githubusercontent.com/runetfreedom/russia-blocked-geosite/release/ru-blocked.txt \
+            -o /tmp/ru-blocked.txt
+          mkdir -p generated
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          from collections import Counter
+
+          src = Path('/tmp/ru-blocked.txt')
+          out = Path('generated/ru-blocked-server-allow.txt')
+          report = Path('generated/ru-blocked-server-allow.report.txt')
+
+          suffixes = (
+              'ru',
+              'xn--p1ai',
+              'su',
+              'moscow',
+              'xn--80adxhks',
+              'tatar',
+              'xn--p1acf',
+              'xn--d1acj3b',
+              'xn--80asehdb',
+              'xn--80aswg',
+              'xn--c1avg',
+              'yandex',
+              'ru.com',
+              'ru.net',
+          )
+
+          raw_bytes = src.read_bytes()
+          lines = raw_bytes.decode('utf-8').splitlines()
+          domain_lines = 0
+          selected = set()
+          counts = Counter()
+
+          for raw in lines:
+              line = raw.strip()
+              if not line or line.startswith('#') or not line.startswith('domain:'):
+                  continue
+              domain_lines += 1
+              host = line[len('domain:'):].strip().lower().rstrip('.')
+              if not host:
+                  continue
+              for suffix in suffixes:
+                  if host == suffix or host.endswith('.' + suffix):
+                      selected.add(host)
+                      counts[suffix] += 1
+                      break
+
+          ordered = sorted(selected)
+          out.write_text('\n'.join(ordered) + ('\n' if ordered else ''), encoding='utf-8')
+
+          report_lines = [
+              'source=https://raw.githubusercontent.com/runetfreedom/russia-blocked-geosite/release/ru-blocked.txt',
+              f'source_sha256={hashlib.sha256(raw_bytes).hexdigest()}',
+              f'input_lines={len(lines)}',
+              f'domain_lines={domain_lines}',
+              f'output_unique_domains={len(ordered)}',
+              '',
+              '[counts_by_suffix]',
+          ]
+          report_lines.extend(f'{s}={counts[s]}' for s in suffixes)
+          report.write_text('\n'.join(report_lines) + '\n', encoding='utf-8')
+          print('\n'.join(report_lines))
+          PY
+
+      - name: Commit generated files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/ru-blocked-server-allow.txt generated/ru-blocked-server-allow.report.txt
+          git commit -m "Generate filtered ru-blocked server allow"
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
