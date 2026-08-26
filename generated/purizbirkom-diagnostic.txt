@@ -1,0 +1,29 @@
+timestamp_utc=2026-08-26T19:49:27Z
+
+[A]
+
+[AAAA]
+
+[CNAME]
+
+[NS]
+
+[A_via_1.1.1.1]
+
+[A_via_8.8.8.8]
+
+[HTTP_headers]
+curl: (6) Could not resolve host: purizbirkom.ru
+
+[HTTPS_headers]
+curl: (6) Could not resolve host: purizbirkom.ru
+
+[HTTPS_follow_redirects]
+curl: (6) Could not resolve host: purizbirkom.ru
+
+[HTTPS_effective]
+curl: (6) Could not resolve host: purizbirkom.ru
+remote_ip=
+http_code=000
+effective_url=https://purizbirkom.ru/
+ssl_verify_result=0
