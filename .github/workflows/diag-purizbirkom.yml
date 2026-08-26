@@ -1,0 +1,71 @@
+name: Diagnose purizbirkom.ru
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/diag-purizbirkom.yml
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+
+      - name: Query DNS and HTTP
+        shell: bash
+        run: |
+          set -u
+          mkdir -p generated
+          OUT=generated/purizbirkom-diagnostic.txt
+          : > "$OUT"
+          {
+            echo "timestamp_utc=$(date -u +%FT%TZ)"
+            echo
+            echo "[A]"
+            dig +short A purizbirkom.ru || true
+            echo
+            echo "[AAAA]"
+            dig +short AAAA purizbirkom.ru || true
+            echo
+            echo "[CNAME]"
+            dig +short CNAME purizbirkom.ru || true
+            echo
+            echo "[NS]"
+            dig +short NS purizbirkom.ru || true
+            echo
+            echo "[A_via_1.1.1.1]"
+            dig @1.1.1.1 +short A purizbirkom.ru || true
+            echo
+            echo "[A_via_8.8.8.8]"
+            dig @8.8.8.8 +short A purizbirkom.ru || true
+            echo
+            echo "[HTTP_headers]"
+            curl -sS -I --max-time 20 http://purizbirkom.ru/ || true
+            echo
+            echo "[HTTPS_headers]"
+            curl -k -sS -I --max-time 20 https://purizbirkom.ru/ || true
+            echo
+            echo "[HTTPS_follow_redirects]"
+            curl -k -sS -I -L --max-redirs 10 --max-time 30 https://purizbirkom.ru/ || true
+            echo
+            echo "[HTTPS_effective]"
+            curl -k -sS -o /dev/null --max-time 20 -w 'remote_ip=%{remote_ip}\nhttp_code=%{http_code}\neffective_url=%{url_effective}\nssl_verify_result=%{ssl_verify_result}\n' https://purizbirkom.ru/ || true
+          } >> "$OUT" 2>&1
+          cat "$OUT"
+
+      - name: Commit diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/purizbirkom-diagnostic.txt
+          git commit -m "Add purizbirkom.ru diagnostic"
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
