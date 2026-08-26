@@ -1,0 +1,10 @@
+# Domains removed from ru-blocked-custom.
+# A suffix removes both the domain itself and all of its subdomains.
+# Keep one domain suffix per line.
+
+# Required: Happ may use this host for DoH and it must not be captured by
+# geosite:ru-blocked-custom before an explicit DIRECT rule can be evaluated.
+cloudflare-dns.com
+
+# Candidate only; intentionally NOT excluded yet:
+# cloudflare-ech.com
