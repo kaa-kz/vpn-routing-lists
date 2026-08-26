@@ -1,5 +1,5 @@
 {
-  "checkpoint_number": 34,
+  "checkpoint_number": 35,
   "config": {
     "concurrency": 64,
     "dns_hard_timeout": 5.0,
@@ -21,17 +21,17 @@
     "watchdog_seconds": 90.0
   },
   "counts": {
-    "01_LIVE_WEB": 3118,
-    "02_DNS_ALIVE_WEB_DEAD": 700,
-    "03_NXDOMAIN_DEAD": 1162,
-    "04_UNCERTAIN_RECHECK": 3524
+    "01_LIVE_WEB": 3221,
+    "02_DNS_ALIVE_WEB_DEAD": 707,
+    "03_NXDOMAIN_DEAD": 1199,
+    "04_UNCERTAIN_RECHECK": 3627
   },
   "input_count": 21989,
   "input_path": "generated/ru-blocked-server-allow.txt",
   "input_sha256": "58fc019a2038a5ffe036886c66ddd09dd6b4c9f121777cf783466c5bee9054b2",
-  "processed_count": 8504,
-  "remaining_count": 13485,
+  "processed_count": 8754,
+  "remaining_count": 13235,
   "status": "RUNNING",
-  "timestamp_utc": "2026-08-26T22:21:41Z",
+  "timestamp_utc": "2026-08-26T22:21:52Z",
   "version": 1
 }
