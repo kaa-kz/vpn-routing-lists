@@ -1,0 +1,117 @@
+name: Check hostname availability
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - scripts/check_hostnames.py
+      - .github/workflows/check-hostnames.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git for persistent checkpoints
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp dnspython
+
+      - name: Static validation
+        run: |
+          python -m py_compile scripts/check_hostnames.py
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('generated/ru-blocked-server-allow.txt')
+          lines = [x.strip() for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
+          assert len(lines) == 21989, len(lines)
+          assert len(lines) == len(set(lines)), 'duplicate hostnames in input'
+          print(f'validated_input_count={len(lines)}')
+          PY
+
+      - name: Run hostname scan
+        id: scan
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/check_hostnames.py \
+            --input generated/ru-blocked-server-allow.txt \
+            --output-dir generated/domain-check \
+            --state-dir state/domain-check \
+            --expected-count 21989 \
+            --concurrency 64 \
+            --dns-timeout 2.5 \
+            --dns-hard-timeout 5 \
+            --http-connect-timeout 3 \
+            --http-total-timeout 8 \
+            --hostname-hard-timeout 35 \
+            --max-redirects 10 \
+            --progress-every 100 \
+            --heartbeat-seconds 30 \
+            --watchdog-seconds 90 \
+            --checkpoint-every 250 \
+            --checkpoint-seconds 120 \
+            --soft-limit-seconds 19200 \
+            --git-checkpoint \
+            2>&1 | tee hostname-scan.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Persist final state and outputs
+        if: always()
+        run: |
+          set +e
+          git add state/domain-check generated/domain-check hostname-scan.log
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist hostname scan state and results"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hostname-scan-diagnostics
+          if-no-files-found: warn
+          retention-days: 90
+          path: |
+            hostname-scan.log
+            state/domain-check/
+            generated/domain-check/
+
+      - name: Fail workflow if scan failed or paused
+        if: always()
+        run: |
+          code='${{ steps.scan.outputs.exit_code }}'
+          echo "scan_exit_code=$code"
+          if [ -z "$code" ]; then
+            echo "Scan exit code was not captured" >&2
+            exit 1
+          fi
+          if [ "$code" -ne 0 ]; then
+            echo "Scan did not complete successfully. Resume is safe from persisted checkpoint." >&2
+            exit "$code"
+          fi
