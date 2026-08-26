@@ -1,0 +1,5 @@
+# Optional domains added to ru-blocked-custom even when they are absent upstream.
+# Keep one domain suffix per line.
+#
+# Example:
+# example-blocked-service.com
