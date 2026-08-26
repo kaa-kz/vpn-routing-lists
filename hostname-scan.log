@@ -1,0 +1,480 @@
+========================================================================
+HOSTNAME AVAILABILITY CHECK
+========================================================================
+input=generated/ru-blocked-server-allow.txt
+input_sha256=58fc019a2038a5ffe036886c66ddd09dd6b4c9f121777cf783466c5bee9054b2
+input_count=21989
+resume_processed=0
+resume_malformed_jsonl_lines=0
+concurrency=64
+dns_servers={'cloudflare': '1.1.1.1', 'google': '8.8.8.8', 'quad9': '9.9.9.9'}
+timeouts: dns=2.5s dns_hard=5.0s http_connect=3.0s http_total=8.0s hostname_hard=35.0s
+[PROGRESS] [------------------------------]   0.45% 100/21989 | LIVE=41 DNS_WEB_DEAD=0 NXDOMAIN=55 UNCERTAIN=4 | rate=42.71 host/s active=64 oldest=2.3s last=007dom.ru checkpoint=0
+[PROGRESS] [------------------------------]   0.91% 200/21989 | LIVE=98 DNS_WEB_DEAD=2 NXDOMAIN=94 UNCERTAIN=6 | rate=39.00 host/s active=64 oldest=5.1s last=1seria.ru checkpoint=0
+[build-ru-blocked-server-allow-20260826 1db3d29] Checkpoint hostname scan 250/21989
+ 3 files changed, 300 insertions(+)
+ create mode 100644 state/domain-check/checkpoint.json
+ create mode 100644 state/domain-check/progress.txt
+ create mode 100644 state/domain-check/results.partial.jsonl
+[CHECKPOINT] Persisted 250/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [------------------------------]   1.36% 300/21989 | LIVE=114 DNS_WEB_DEAD=17 NXDOMAIN=95 UNCERTAIN=74 | rate=26.45 host/s active=64 oldest=8.5s last=28ps-tocd.biz.net.ru checkpoint=1
+[PROGRESS] [------------------------------]   1.82% 400/21989 | LIVE=135 DNS_WEB_DEAD=27 NXDOMAIN=95 UNCERTAIN=143 | rate=24.99 host/s active=64 oldest=6.3s last=7-kont.ru checkpoint=1
+[PROGRESS] [------------------------------]   2.27% 500/21989 | LIVE=166 DNS_WEB_DEAD=27 NXDOMAIN=112 UNCERTAIN=195 | rate=26.46 host/s active=64 oldest=8.9s last=a3kuhni.ru checkpoint=1
+[build-ru-blocked-server-allow-20260826 07a582a] Checkpoint hostname scan 500/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 500/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [------------------------------]   2.73% 600/21989 | LIVE=235 DNS_WEB_DEAD=29 NXDOMAIN=133 UNCERTAIN=203 | rate=26.96 host/s active=64 oldest=12.3s last=adventurelandconf.ru checkpoint=2
+[PROGRESS] [------------------------------]   3.18% 700/21989 | LIVE=266 DNS_WEB_DEAD=34 NXDOMAIN=134 UNCERTAIN=266 | rate=25.85 host/s active=64 oldest=9.5s last=agromer.ru checkpoint=2
+[build-ru-blocked-server-allow-20260826 a8b3f66] Checkpoint hostname scan 750/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 750/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#-----------------------------]   3.64% 800/21989 | LIVE=289 DNS_WEB_DEAD=37 NXDOMAIN=134 UNCERTAIN=340 | rate=25.08 host/s active=64 oldest=8.8s last=aksalut.ru checkpoint=3
+[PROGRESS] [#-----------------------------]   4.09% 900/21989 | LIVE=329 DNS_WEB_DEAD=38 NXDOMAIN=147 UNCERTAIN=386 | rate=25.16 host/s active=64 oldest=12.6s last=all-migrant.ru checkpoint=3
+[PROGRESS] [#-----------------------------]   4.55% 1000/21989 | LIVE=399 DNS_WEB_DEAD=38 NXDOMAIN=173 UNCERTAIN=390 | rate=25.95 host/s active=64 oldest=12.8s last=alvang.ru checkpoint=3
+[build-ru-blocked-server-allow-20260826 d485b8f] Checkpoint hostname scan 1000/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 1000/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#-----------------------------]   5.00% 1100/21989 | LIVE=438 DNS_WEB_DEAD=41 NXDOMAIN=178 UNCERTAIN=443 | rate=24.36 host/s active=64 oldest=10.2s last=amtek-crimea.ru checkpoint=4
+[PROGRESS] [#-----------------------------]   5.46% 1200/21989 | LIVE=472 DNS_WEB_DEAD=44 NXDOMAIN=181 UNCERTAIN=503 | rate=24.27 host/s active=64 oldest=12.0s last=anime.anilibriatop.ru checkpoint=4
+[build-ru-blocked-server-allow-20260826 21129a7] Checkpoint hostname scan 1251/21989
+ 3 files changed, 270 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 1251/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#-----------------------------]   6.37% 1400/21989 | LIVE=569 DNS_WEB_DEAD=48 NXDOMAIN=222 UNCERTAIN=561 | rate=24.70 host/s active=64 oldest=8.9s last=arhi-z.ru checkpoint=5
+[PROGRESS] [##----------------------------]   6.82% 1500/21989 | LIVE=610 DNS_WEB_DEAD=52 NXDOMAIN=227 UNCERTAIN=611 | rate=24.36 host/s active=64 oldest=13.7s last=artlasernn.ru checkpoint=5
+[build-ru-blocked-server-allow-20260826 7ef0f6b] Checkpoint hostname scan 1502/21989
+ 3 files changed, 270 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 1502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##----------------------------]   7.28% 1600/21989 | LIVE=637 DNS_WEB_DEAD=53 NXDOMAIN=230 UNCERTAIN=680 | rate=24.04 host/s active=64 oldest=7.5s last=atlantcleaning.ru checkpoint=6
+[build-ru-blocked-server-allow-20260826 9ab2d9e] Checkpoint hostname scan 1752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 1752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##----------------------------]   8.19% 1800/21989 | LIVE=709 DNS_WEB_DEAD=53 NXDOMAIN=269 UNCERTAIN=769 | rate=24.59 host/s active=64 oldest=14.2s last=avpansionat.ru checkpoint=7
+[PROGRESS] [##----------------------------]   9.10% 2000/21989 | LIVE=798 DNS_WEB_DEAD=58 NXDOMAIN=286 UNCERTAIN=858 | rate=24.39 host/s active=64 oldest=9.1s last=bailian.ru checkpoint=7
+[build-ru-blocked-server-allow-20260826 214b728] Checkpoint hostname scan 2002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 2002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##----------------------------]   9.55% 2100/21989 | LIVE=824 DNS_WEB_DEAD=59 NXDOMAIN=292 UNCERTAIN=925 | rate=24.21 host/s active=64 oldest=9.3s last=barcpd3.ru checkpoint=8
+[PROGRESS] [###---------------------------]  10.01% 2200/21989 | LIVE=868 DNS_WEB_DEAD=61 NXDOMAIN=316 UNCERTAIN=955 | rate=24.37 host/s active=64 oldest=11.8s last=b2bnds.ru checkpoint=8
+[build-ru-blocked-server-allow-20260826 0348f7d] Checkpoint hostname scan 2252/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 2252/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###---------------------------]  10.46% 2300/21989 | LIVE=876 DNS_WEB_DEAD=109 NXDOMAIN=333 UNCERTAIN=982 | rate=23.43 host/s active=64 oldest=8.5s last=bezgranitsstore.ru checkpoint=9
+[build-ru-blocked-server-allow-20260826 27ef0de] Checkpoint hostname scan 2502/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 2502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###---------------------------]  11.82% 2600/21989 | LIVE=995 DNS_WEB_DEAD=113 NXDOMAIN=375 UNCERTAIN=1117 | rate=23.47 host/s active=64 oldest=9.3s last=bosch-master24.ru checkpoint=10
+[PROGRESS] [###---------------------------]  12.28% 2700/21989 | LIVE=1026 DNS_WEB_DEAD=114 NXDOMAIN=384 UNCERTAIN=1176 | rate=23.47 host/s active=64 oldest=12.2s last=bt-metalloprocat.ru checkpoint=10
+[build-ru-blocked-server-allow-20260826 dc60705] Checkpoint hostname scan 2752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 2752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###---------------------------]  12.73% 2800/21989 | LIVE=1046 DNS_WEB_DEAD=118 NXDOMAIN=387 UNCERTAIN=1249 | rate=23.48 host/s active=64 oldest=13.8s last=bo.sltodom.ru checkpoint=11
+[PROGRESS] [###---------------------------]  13.19% 2900/21989 | LIVE=1086 DNS_WEB_DEAD=120 NXDOMAIN=406 UNCERTAIN=1288 | rate=23.51 host/s active=64 oldest=10.7s last=c2free.ru checkpoint=11
+[PROGRESS] [####--------------------------]  13.64% 3000/21989 | LIVE=1149 DNS_WEB_DEAD=121 NXDOMAIN=419 UNCERTAIN=1311 | rate=23.49 host/s active=64 oldest=13.3s last=butmuzeum.ru checkpoint=11
+[build-ru-blocked-server-allow-20260826 48f2596] Checkpoint hostname scan 3002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 3002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [####--------------------------]  14.10% 3100/21989 | LIVE=1189 DNS_WEB_DEAD=121 NXDOMAIN=427 UNCERTAIN=1363 | rate=23.35 host/s active=64 oldest=11.4s last=chaihanaushahina.ru checkpoint=12
+[PROGRESS] [####--------------------------]  14.55% 3200/21989 | LIVE=1225 DNS_WEB_DEAD=124 NXDOMAIN=431 UNCERTAIN=1420 | rate=23.28 host/s active=64 oldest=5.3s last=checksndsaudit77.ru checkpoint=12
+[build-ru-blocked-server-allow-20260826 fc2dc46] Checkpoint hostname scan 3252/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 3252/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [####--------------------------]  15.01% 3300/21989 | LIVE=1254 DNS_WEB_DEAD=128 NXDOMAIN=443 UNCERTAIN=1475 | rate=23.34 host/s active=64 oldest=8.2s last=chormiet.ru checkpoint=13
+[PROGRESS] [####--------------------------]  15.46% 3400/21989 | LIVE=1318 DNS_WEB_DEAD=132 NXDOMAIN=456 UNCERTAIN=1494 | rate=23.44 host/s active=64 oldest=11.6s last=cleanship.ru checkpoint=13
+[PROGRESS] [####--------------------------]  15.92% 3500/21989 | LIVE=1346 DNS_WEB_DEAD=138 NXDOMAIN=461 UNCERTAIN=1555 | rate=23.49 host/s active=64 oldest=8.3s last=compomaster.ru checkpoint=13
+[build-ru-blocked-server-allow-20260826 3cd70f2] Checkpoint hostname scan 3502/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 3502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####-------------------------]  16.83% 3700/21989 | LIVE=1411 DNS_WEB_DEAD=140 NXDOMAIN=481 UNCERTAIN=1668 | rate=23.54 host/s active=64 oldest=6.1s last=damal-mebel.ru checkpoint=14
+[build-ru-blocked-server-allow-20260826 5281faf] Checkpoint hostname scan 3752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 3752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####-------------------------]  17.28% 3800/21989 | LIVE=1466 DNS_WEB_DEAD=141 NXDOMAIN=493 UNCERTAIN=1700 | rate=23.49 host/s active=64 oldest=8.1s last=daysprizogatella.ru checkpoint=15
+[PROGRESS] [#####-------------------------]  17.74% 3900/21989 | LIVE=1508 DNS_WEB_DEAD=143 NXDOMAIN=504 UNCERTAIN=1745 | rate=23.41 host/s active=64 oldest=13.0s last=dener-russia.ru checkpoint=15
+[PROGRESS] [#####-------------------------]  18.19% 4000/21989 | LIVE=1533 DNS_WEB_DEAD=144 NXDOMAIN=509 UNCERTAIN=1814 | rate=23.51 host/s active=64 oldest=8.7s last=detsad42-sarov.ru checkpoint=15
+[build-ru-blocked-server-allow-20260826 4f9154f] Checkpoint hostname scan 4002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 4002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####-------------------------]  18.65% 4100/21989 | LIVE=1583 DNS_WEB_DEAD=146 NXDOMAIN=527 UNCERTAIN=1844 | rate=23.46 host/s active=64 oldest=10.8s last=direct2.ru checkpoint=16
+[PROGRESS] [#####-------------------------]  19.10% 4200/21989 | LIVE=1623 DNS_WEB_DEAD=147 NXDOMAIN=538 UNCERTAIN=1892 | rate=23.57 host/s active=64 oldest=11.3s last=dmsh-10.ru checkpoint=16
+[build-ru-blocked-server-allow-20260826 edef4d3] Checkpoint hostname scan 4252/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 4252/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####-------------------------]  19.56% 4300/21989 | LIVE=1643 DNS_WEB_DEAD=153 NXDOMAIN=548 UNCERTAIN=1956 | rate=23.16 host/s active=64 oldest=8.7s last=domnamsk.ru checkpoint=17
+[PROGRESS] [######------------------------]  20.01% 4400/21989 | LIVE=1643 DNS_WEB_DEAD=203 NXDOMAIN=575 UNCERTAIN=1979 | rate=22.88 host/s active=64 oldest=7.9s last=dopok-24.okis.ru checkpoint=17
+[PROGRESS] [######------------------------]  20.46% 4500/21989 | LIVE=1643 DNS_WEB_DEAD=261 NXDOMAIN=615 UNCERTAIN=1981 | rate=22.63 host/s active=64 oldest=7.0s last=dpl-perm.ru checkpoint=17
+[build-ru-blocked-server-allow-20260826 ea1fc91] Checkpoint hostname scan 4502/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 4502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######------------------------]  20.92% 4600/21989 | LIVE=1687 DNS_WEB_DEAD=286 NXDOMAIN=633 UNCERTAIN=1994 | rate=22.56 host/s active=64 oldest=7.4s last=ds85nvr.ru checkpoint=18
+[PROGRESS] [######------------------------]  21.37% 4700/21989 | LIVE=1712 DNS_WEB_DEAD=287 NXDOMAIN=648 UNCERTAIN=2053 | rate=22.69 host/s active=64 oldest=3.2s last=dverimari.ru checkpoint=18
+[build-ru-blocked-server-allow-20260826 4fbece0] Checkpoint hostname scan 4752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 4752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######------------------------]  21.83% 4800/21989 | LIVE=1762 DNS_WEB_DEAD=287 NXDOMAIN=661 UNCERTAIN=2090 | rate=22.69 host/s active=64 oldest=7.6s last=eatmeapp.ru checkpoint=19
+[PROGRESS] [######------------------------]  22.28% 4900/21989 | LIVE=1815 DNS_WEB_DEAD=290 NXDOMAIN=669 UNCERTAIN=2126 | rate=22.73 host/s active=64 oldest=11.7s last=egrn-documents.su checkpoint=19
+[PROGRESS] [######------------------------]  22.74% 5000/21989 | LIVE=1853 DNS_WEB_DEAD=294 NXDOMAIN=676 UNCERTAIN=2177 | rate=22.70 host/s active=64 oldest=8.7s last=elista.kpleto.ru checkpoint=19
+[build-ru-blocked-server-allow-20260826 1846b82] Checkpoint hostname scan 5002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 5002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######------------------------]  23.19% 5100/21989 | LIVE=1904 DNS_WEB_DEAD=297 NXDOMAIN=692 UNCERTAIN=2207 | rate=22.64 host/s active=64 oldest=13.7s last=en.stloe.ru checkpoint=20
+[PROGRESS] [#######-----------------------]  23.65% 5200/21989 | LIVE=1951 DNS_WEB_DEAD=300 NXDOMAIN=702 UNCERTAIN=2247 | rate=22.59 host/s active=64 oldest=10.2s last=essentuki.registratsia-shkola.ru checkpoint=20
+[build-ru-blocked-server-allow-20260826 d138114] Checkpoint hostname scan 5252/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 5252/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#######-----------------------]  24.10% 5300/21989 | LIVE=1998 DNS_WEB_DEAD=302 NXDOMAIN=712 UNCERTAIN=2288 | rate=22.50 host/s active=64 oldest=12.9s last=exposurephotolab.ru checkpoint=21
+[PROGRESS] [#######-----------------------]  24.56% 5400/21989 | LIVE=2049 DNS_WEB_DEAD=305 NXDOMAIN=722 UNCERTAIN=2324 | rate=22.55 host/s active=64 oldest=13.2s last=fall-out-boy.ru checkpoint=21
+[PROGRESS] [#######-----------------------]  25.01% 5500/21989 | LIVE=2086 DNS_WEB_DEAD=306 NXDOMAIN=739 UNCERTAIN=2369 | rate=22.63 host/s active=64 oldest=7.2s last=fengda-rus.ru checkpoint=21
+[build-ru-blocked-server-allow-20260826 5e1270b] Checkpoint hostname scan 5502/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 5502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#######-----------------------]  25.47% 5600/21989 | LIVE=2087 DNS_WEB_DEAD=361 NXDOMAIN=760 UNCERTAIN=2392 | rate=22.15 host/s active=64 oldest=7.5s last=fishingmall.ru checkpoint=22
+[PROGRESS] [#######-----------------------]  25.92% 5700/21989 | LIVE=2087 DNS_WEB_DEAD=426 NXDOMAIN=790 UNCERTAIN=2397 | rate=21.95 host/s active=64 oldest=7.9s last=flabria.ru checkpoint=22
+[build-ru-blocked-server-allow-20260826 7260826] Checkpoint hostname scan 5752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 5752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#######-----------------------]  26.38% 5800/21989 | LIVE=2087 DNS_WEB_DEAD=501 NXDOMAIN=806 UNCERTAIN=2406 | rate=21.69 host/s active=64 oldest=6.6s last=fpoda63.ru checkpoint=23
+[PROGRESS] [########----------------------]  26.83% 5900/21989 | LIVE=2087 DNS_WEB_DEAD=566 NXDOMAIN=840 UNCERTAIN=2407 | rate=21.37 host/s active=64 oldest=6.2s last=franchbook.ru checkpoint=23
+[PROGRESS] [########----------------------]  27.29% 6000/21989 | LIVE=2097 DNS_WEB_DEAD=630 NXDOMAIN=861 UNCERTAIN=2412 | rate=21.22 host/s active=64 oldest=6.7s last=g103.ru checkpoint=23
+[build-ru-blocked-server-allow-20260826 baf13d0] Checkpoint hostname scan 6002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 6002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [########----------------------]  27.74% 6100/21989 | LIVE=2161 DNS_WEB_DEAD=641 NXDOMAIN=878 UNCERTAIN=2420 | rate=21.21 host/s active=64 oldest=7.8s last=gastello63.ru checkpoint=24
+[PROGRESS] [########----------------------]  28.20% 6200/21989 | LIVE=2205 DNS_WEB_DEAD=644 NXDOMAIN=884 UNCERTAIN=2467 | rate=21.28 host/s active=64 oldest=6.3s last=geekgu.ru checkpoint=24
+[build-ru-blocked-server-allow-20260826 b4122e9] Checkpoint hostname scan 6252/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 6252/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [########----------------------]  28.65% 6300/21989 | LIVE=2234 DNS_WEB_DEAD=648 NXDOMAIN=897 UNCERTAIN=2521 | rate=21.33 host/s active=64 oldest=9.7s last=geopronh.ru checkpoint=25
+[PROGRESS] [########----------------------]  29.11% 6400/21989 | LIVE=2277 DNS_WEB_DEAD=649 NXDOMAIN=907 UNCERTAIN=2567 | rate=21.37 host/s active=64 oldest=11.5s last=go-to-work.ru checkpoint=25
+[PROGRESS] [########----------------------]  29.56% 6500/21989 | LIVE=2297 DNS_WEB_DEAD=651 NXDOMAIN=915 UNCERTAIN=2637 | rate=21.42 host/s active=64 oldest=5.8s last=gepad.ru checkpoint=25
+[build-ru-blocked-server-allow-20260826 bf66fa5] Checkpoint hostname scan 6502/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 6502/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########---------------------]  30.02% 6600/21989 | LIVE=2333 DNS_WEB_DEAD=653 NXDOMAIN=931 UNCERTAIN=2683 | rate=21.37 host/s active=64 oldest=11.2s last=gradus247-nn.ru checkpoint=26
+[PROGRESS] [#########---------------------]  30.47% 6700/21989 | LIVE=2381 DNS_WEB_DEAD=655 NXDOMAIN=941 UNCERTAIN=2723 | rate=21.41 host/s active=64 oldest=9.5s last=guropt.ru checkpoint=26
+[build-ru-blocked-server-allow-20260826 132d53d] Checkpoint hostname scan 6752/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 6752/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########---------------------]  30.92% 6800/21989 | LIVE=2416 DNS_WEB_DEAD=659 NXDOMAIN=948 UNCERTAIN=2777 | rate=21.38 host/s active=64 oldest=12.2s last=habarovsk.zaochnik.ru checkpoint=27
+[PROGRESS] [#########---------------------]  31.38% 6900/21989 | LIVE=2455 DNS_WEB_DEAD=667 NXDOMAIN=964 UNCERTAIN=2814 | rate=21.44 host/s active=64 oldest=11.5s last=hennaexpert.ru checkpoint=27
+[PROGRESS] [#########---------------------]  31.83% 7000/21989 | LIVE=2501 DNS_WEB_DEAD=668 NXDOMAIN=969 UNCERTAIN=2862 | rate=21.48 host/s active=64 oldest=7.9s last=horecaleaders.ru checkpoint=27
+[build-ru-blocked-server-allow-20260826 fd8ff6b] Checkpoint hostname scan 7002/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 7002/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########---------------------]  32.29% 7100/21989 | LIVE=2537 DNS_WEB_DEAD=669 NXDOMAIN=983 UNCERTAIN=2911 | rate=21.42 host/s active=64 oldest=13.4s last=hrust-6.rush-mega17.ru checkpoint=28
+[PROGRESS] [#########---------------------]  32.74% 7200/21989 | LIVE=2584 DNS_WEB_DEAD=673 NXDOMAIN=991 UNCERTAIN=2952 | rate=21.42 host/s active=64 oldest=7.5s last=i-pro24.ru checkpoint=28
+[build-ru-blocked-server-allow-20260826 f0e4b71] Checkpoint hostname scan 7253/21989
+ 3 files changed, 270 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 7253/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########---------------------]  33.20% 7300/21989 | LIVE=2625 DNS_WEB_DEAD=679 NXDOMAIN=1000 UNCERTAIN=2996 | rate=21.36 host/s active=64 oldest=10.7s last=icdentm.ru checkpoint=29
+[PROGRESS] [##########--------------------]  33.65% 7400/21989 | LIVE=2680 DNS_WEB_DEAD=681 NXDOMAIN=1015 UNCERTAIN=3024 | rate=21.43 host/s active=64 oldest=14.1s last=ilm-forum.ru checkpoint=29
+[PROGRESS] [##########--------------------]  34.11% 7500/21989 | LIVE=2715 DNS_WEB_DEAD=682 NXDOMAIN=1035 UNCERTAIN=3068 | rate=21.53 host/s active=64 oldest=10.2s last=inpat.ru checkpoint=29
+[build-ru-blocked-server-allow-20260826 a36bc73] Checkpoint hostname scan 7503/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 7503/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##########--------------------]  35.02% 7700/21989 | LIVE=2783 DNS_WEB_DEAD=683 NXDOMAIN=1059 UNCERTAIN=3175 | rate=21.51 host/s active=64 oldest=6.8s last=ivf-nn.ru checkpoint=30
+[build-ru-blocked-server-allow-20260826 a7c8636] Checkpoint hostname scan 7753/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 7753/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##########--------------------]  35.47% 7800/21989 | LIVE=2814 DNS_WEB_DEAD=683 NXDOMAIN=1071 UNCERTAIN=3232 | rate=21.53 host/s active=64 oldest=11.2s last=judosaratov.ru checkpoint=31
+[PROGRESS] [##########--------------------]  36.38% 8000/21989 | LIVE=2894 DNS_WEB_DEAD=688 NXDOMAIN=1099 UNCERTAIN=3319 | rate=21.59 host/s active=64 oldest=8.9s last=kapitoshka14.ru checkpoint=31
+[build-ru-blocked-server-allow-20260826 3cf5b46] Checkpoint hostname scan 8003/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 8003/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########-------------------]  36.84% 8100/21989 | LIVE=2931 DNS_WEB_DEAD=690 NXDOMAIN=1110 UNCERTAIN=3369 | rate=21.56 host/s active=64 oldest=10.2s last=kazus.ru checkpoint=32
+[PROGRESS] [###########-------------------]  37.29% 8200/21989 | LIVE=2975 DNS_WEB_DEAD=691 NXDOMAIN=1124 UNCERTAIN=3410 | rate=21.59 host/s active=64 oldest=6.6s last=kirsoc.ru checkpoint=32
+[build-ru-blocked-server-allow-20260826 0a59363] Checkpoint hostname scan 8253/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 8253/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########-------------------]  37.75% 8300/21989 | LIVE=3019 DNS_WEB_DEAD=694 NXDOMAIN=1131 UNCERTAIN=3456 | rate=21.53 host/s active=64 oldest=12.4s last=ke.sltodom.ru checkpoint=33
+[PROGRESS] [###########-------------------]  38.66% 8500/21989 | LIVE=3115 DNS_WEB_DEAD=700 NXDOMAIN=1162 UNCERTAIN=3523 | rate=21.60 host/s active=64 oldest=8.5s last=kozma-petrov.ru checkpoint=33
+[build-ru-blocked-server-allow-20260826 b829585] Checkpoint hostname scan 8504/21989
+ 3 files changed, 270 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 8504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########-------------------]  39.11% 8600/21989 | LIVE=3167 DNS_WEB_DEAD=703 NXDOMAIN=1177 UNCERTAIN=3553 | rate=21.60 host/s active=64 oldest=13.3s last=kuhnov.ru checkpoint=34
+[PROGRESS] [###########-------------------]  39.57% 8700/21989 | LIVE=3203 DNS_WEB_DEAD=704 NXDOMAIN=1182 UNCERTAIN=3611 | rate=21.62 host/s active=64 oldest=6.3s last=kumertau-rikc.ru checkpoint=34
+[build-ru-blocked-server-allow-20260826 9571e53] Checkpoint hostname scan 8754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 8754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############------------------]  40.02% 8800/21989 | LIVE=3226 DNS_WEB_DEAD=709 NXDOMAIN=1201 UNCERTAIN=3664 | rate=21.60 host/s active=64 oldest=8.6s last=kurortsol.ru checkpoint=35
+[PROGRESS] [############------------------]  40.47% 8900/21989 | LIVE=3279 DNS_WEB_DEAD=711 NXDOMAIN=1218 UNCERTAIN=3692 | rate=21.59 host/s active=64 oldest=5.2s last=lady-antikrizis.ru checkpoint=35
+[PROGRESS] [############------------------]  40.93% 9000/21989 | LIVE=3317 DNS_WEB_DEAD=712 NXDOMAIN=1230 UNCERTAIN=3741 | rate=21.68 host/s active=64 oldest=8.1s last=lazerlada.ru checkpoint=35
+[build-ru-blocked-server-allow-20260826 d6215eb] Checkpoint hostname scan 9004/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 9004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############------------------]  41.84% 9200/21989 | LIVE=3387 DNS_WEB_DEAD=716 NXDOMAIN=1252 UNCERTAIN=3845 | rate=21.66 host/s active=64 oldest=9.9s last=lh74.ru checkpoint=36
+[build-ru-blocked-server-allow-20260826 0ce8ac5] Checkpoint hostname scan 9254/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 9254/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############------------------]  42.75% 9400/21989 | LIVE=3453 DNS_WEB_DEAD=758 NXDOMAIN=1288 UNCERTAIN=3901 | rate=21.44 host/s active=64 oldest=7.8s last=loveki.ru checkpoint=37
+[PROGRESS] [############------------------]  43.20% 9500/21989 | LIVE=3454 DNS_WEB_DEAD=811 NXDOMAIN=1319 UNCERTAIN=3916 | rate=21.27 host/s active=64 oldest=8.2s last=lovemonster.ru checkpoint=37
+[build-ru-blocked-server-allow-20260826 446dfd0] Checkpoint hostname scan 9504/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 9504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############-----------------]  43.66% 9600/21989 | LIVE=3472 DNS_WEB_DEAD=848 NXDOMAIN=1338 UNCERTAIN=3942 | rate=21.11 host/s active=64 oldest=10.4s last=mag5.ru checkpoint=38
+[PROGRESS] [#############-----------------]  44.11% 9700/21989 | LIVE=3475 DNS_WEB_DEAD=907 NXDOMAIN=1359 UNCERTAIN=3959 | rate=20.99 host/s active=64 oldest=7.3s last=maranit.ru checkpoint=38
+[build-ru-blocked-server-allow-20260826 3f8b0ab] Checkpoint hostname scan 9754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 9754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############-----------------]  44.57% 9800/21989 | LIVE=3475 DNS_WEB_DEAD=975 NXDOMAIN=1373 UNCERTAIN=3977 | rate=20.89 host/s active=64 oldest=7.0s last=martin-expy1.ru checkpoint=39
+[PROGRESS] [#############-----------------]  45.02% 9900/21989 | LIVE=3475 DNS_WEB_DEAD=989 NXDOMAIN=1426 UNCERTAIN=4010 | rate=20.87 host/s active=64 oldest=10.4s last=masterfibre63.ru checkpoint=39
+[PROGRESS] [#############-----------------]  45.48% 10000/21989 | LIVE=3475 DNS_WEB_DEAD=1038 NXDOMAIN=1446 UNCERTAIN=4041 | rate=20.81 host/s active=64 oldest=8.3s last=mc.ecoacademiya.ru checkpoint=39
+[build-ru-blocked-server-allow-20260826 500270a] Checkpoint hostname scan 10004/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 10004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############-----------------]  45.93% 10100/21989 | LIVE=3497 DNS_WEB_DEAD=1066 NXDOMAIN=1471 UNCERTAIN=4066 | rate=20.70 host/s active=64 oldest=7.6s last=mdou22-raduga.ru checkpoint=40
+[PROGRESS] [#############-----------------]  46.39% 10200/21989 | LIVE=3544 DNS_WEB_DEAD=1068 NXDOMAIN=1482 UNCERTAIN=4106 | rate=20.70 host/s active=64 oldest=7.2s last=megalopolis-2024.swezhak.su checkpoint=40
+[build-ru-blocked-server-allow-20260826 c8a6f48] Checkpoint hostname scan 10254/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 10254/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##############----------------]  46.84% 10300/21989 | LIVE=3583 DNS_WEB_DEAD=1076 NXDOMAIN=1496 UNCERTAIN=4145 | rate=20.66 host/s active=64 oldest=8.9s last=mexamafia.ru checkpoint=41
+[PROGRESS] [##############----------------]  47.30% 10400/21989 | LIVE=3629 DNS_WEB_DEAD=1078 NXDOMAIN=1501 UNCERTAIN=4192 | rate=20.67 host/s active=64 oldest=13.5s last=milikest.ru checkpoint=41
+[PROGRESS] [##############----------------]  47.75% 10500/21989 | LIVE=3675 DNS_WEB_DEAD=1081 NXDOMAIN=1515 UNCERTAIN=4229 | rate=20.68 host/s active=64 oldest=8.1s last=mis-klik.ru checkpoint=41
+[build-ru-blocked-server-allow-20260826 12ce803] Checkpoint hostname scan 10504/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 10504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##############----------------]  48.21% 10600/21989 | LIVE=3704 DNS_WEB_DEAD=1092 NXDOMAIN=1537 UNCERTAIN=4267 | rate=20.53 host/s active=64 oldest=9.5s last=modnaya71.ru checkpoint=42
+[PROGRESS] [##############----------------]  48.66% 10700/21989 | LIVE=3764 DNS_WEB_DEAD=1099 NXDOMAIN=1550 UNCERTAIN=4287 | rate=20.55 host/s active=64 oldest=12.7s last=moschistka.ru checkpoint=42
+[build-ru-blocked-server-allow-20260826 8cc530c] Checkpoint hostname scan 10754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 10754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##############----------------]  49.12% 10800/21989 | LIVE=3806 DNS_WEB_DEAD=1101 NXDOMAIN=1562 UNCERTAIN=4331 | rate=20.51 host/s active=64 oldest=14.8s last=motorevive.ru checkpoint=43
+[PROGRESS] [##############----------------]  49.57% 10900/21989 | LIVE=3857 DNS_WEB_DEAD=1103 NXDOMAIN=1577 UNCERTAIN=4363 | rate=20.55 host/s active=64 oldest=12.0s last=mpremia.ru checkpoint=43
+[PROGRESS] [###############---------------]  50.03% 11000/21989 | LIVE=3895 DNS_WEB_DEAD=1107 NXDOMAIN=1584 UNCERTAIN=4414 | rate=20.59 host/s active=64 oldest=5.7s last=mugalun.ru checkpoint=43
+[build-ru-blocked-server-allow-20260826 fcb4419] Checkpoint hostname scan 11004/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 11004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###############---------------]  50.48% 11100/21989 | LIVE=3937 DNS_WEB_DEAD=1109 NXDOMAIN=1597 UNCERTAIN=4457 | rate=20.52 host/s active=64 oldest=9.6s last=msk-perila-group.ru checkpoint=44
+[PROGRESS] [###############---------------]  50.93% 11200/21989 | LIVE=3978 DNS_WEB_DEAD=1111 NXDOMAIN=1608 UNCERTAIN=4503 | rate=20.56 host/s active=64 oldest=6.1s last=myhandsel.ru checkpoint=44
+[build-ru-blocked-server-allow-20260826 30e6322] Checkpoint hostname scan 11254/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 11254/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###############---------------]  51.39% 11300/21989 | LIVE=4026 DNS_WEB_DEAD=1115 NXDOMAIN=1618 UNCERTAIN=4541 | rate=20.54 host/s active=64 oldest=7.8s last=nail-zone-salon.ru checkpoint=45
+[PROGRESS] [###############---------------]  51.84% 11400/21989 | LIVE=4075 DNS_WEB_DEAD=1119 NXDOMAIN=1627 UNCERTAIN=4579 | rate=20.53 host/s active=64 oldest=8.8s last=neorusedu.ru checkpoint=45
+[PROGRESS] [###############---------------]  52.30% 11500/21989 | LIVE=4130 DNS_WEB_DEAD=1120 NXDOMAIN=1643 UNCERTAIN=4607 | rate=20.61 host/s active=64 oldest=11.6s last=nbmart.ru checkpoint=45
+[build-ru-blocked-server-allow-20260826 684deb1] Checkpoint hostname scan 11504/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 11504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###############---------------]  52.75% 11600/21989 | LIVE=4174 DNS_WEB_DEAD=1120 NXDOMAIN=1655 UNCERTAIN=4651 | rate=20.59 host/s active=64 oldest=7.9s last=niisu.ru checkpoint=46
+[PROGRESS] [###############---------------]  53.21% 11700/21989 | LIVE=4210 DNS_WEB_DEAD=1124 NXDOMAIN=1661 UNCERTAIN=4705 | rate=20.62 host/s active=64 oldest=5.5s last=nizrp.ru checkpoint=46
+[build-ru-blocked-server-allow-20260826 e52597d] Checkpoint hostname scan 11754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 11754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [################--------------]  54.12% 11900/21989 | LIVE=4291 DNS_WEB_DEAD=1129 NXDOMAIN=1681 UNCERTAIN=4799 | rate=20.59 host/s active=64 oldest=13.0s last=nschool5.ru checkpoint=47
+[PROGRESS] [################--------------]  54.57% 12000/21989 | LIVE=4342 DNS_WEB_DEAD=1132 NXDOMAIN=1690 UNCERTAIN=4836 | rate=20.62 host/s active=64 oldest=7.6s last=obyavlenie.ru checkpoint=47
+[build-ru-blocked-server-allow-20260826 af74250] Checkpoint hostname scan 12004/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 12004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [################--------------]  55.03% 12100/21989 | LIVE=4353 DNS_WEB_DEAD=1137 NXDOMAIN=1693 UNCERTAIN=4917 | rate=20.55 host/s active=64 oldest=8.0s last=oko-auto.ru checkpoint=48
+[PROGRESS] [################--------------]  55.48% 12200/21989 | LIVE=4405 DNS_WEB_DEAD=1139 NXDOMAIN=1702 UNCERTAIN=4954 | rate=20.58 host/s active=64 oldest=7.1s last=opel-nizhegorodec.ru checkpoint=48
+[build-ru-blocked-server-allow-20260826 e812d6b] Checkpoint hostname scan 12254/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 12254/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [################--------------]  55.94% 12300/21989 | LIVE=4425 DNS_WEB_DEAD=1143 NXDOMAIN=1707 UNCERTAIN=5025 | rate=20.54 host/s active=64 oldest=9.1s last=oruzi.ru checkpoint=49
+[PROGRESS] [################--------------]  56.39% 12400/21989 | LIVE=4469 DNS_WEB_DEAD=1147 NXDOMAIN=1726 UNCERTAIN=5058 | rate=20.55 host/s active=64 oldest=8.5s last=otelagat.ru checkpoint=49
+[PROGRESS] [#################-------------]  56.85% 12500/21989 | LIVE=4504 DNS_WEB_DEAD=1151 NXDOMAIN=1732 UNCERTAIN=5113 | rate=20.54 host/s active=64 oldest=13.7s last=pantera-oxrana.ru checkpoint=49
+[build-ru-blocked-server-allow-20260826 99d40aa] Checkpoint hostname scan 12504/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 12504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#################-------------]  57.76% 12700/21989 | LIVE=4605 DNS_WEB_DEAD=1155 NXDOMAIN=1758 UNCERTAIN=5182 | rate=20.55 host/s active=64 oldest=5.6s last=petersburg-docs.ru checkpoint=50
+[build-ru-blocked-server-allow-20260826 7d9fc30] Checkpoint hostname scan 12754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 12754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#################-------------]  58.21% 12800/21989 | LIVE=4632 DNS_WEB_DEAD=1161 NXDOMAIN=1768 UNCERTAIN=5239 | rate=20.51 host/s active=64 oldest=7.9s last=physolymp.ru checkpoint=51
+[PROGRESS] [#################-------------]  58.67% 12900/21989 | LIVE=4690 DNS_WEB_DEAD=1165 NXDOMAIN=1774 UNCERTAIN=5271 | rate=20.54 host/s active=64 oldest=10.1s last=plansada.ru checkpoint=51
+[PROGRESS] [#################-------------]  59.12% 13000/21989 | LIVE=4733 DNS_WEB_DEAD=1166 NXDOMAIN=1784 UNCERTAIN=5317 | rate=20.57 host/s active=64 oldest=8.5s last=podss.evosell.ru checkpoint=51
+[build-ru-blocked-server-allow-20260826 9c8c49e] Checkpoint hostname scan 13004/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 13004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#################-------------]  59.58% 13100/21989 | LIVE=4745 DNS_WEB_DEAD=1187 NXDOMAIN=1798 UNCERTAIN=5370 | rate=20.40 host/s active=64 oldest=9.7s last=pornolabvideo.ru checkpoint=52
+[PROGRESS] [##################------------]  60.03% 13200/21989 | LIVE=4749 DNS_WEB_DEAD=1257 NXDOMAIN=1817 UNCERTAIN=5377 | rate=20.30 host/s active=64 oldest=8.2s last=pr0piska.ru checkpoint=52
+[build-ru-blocked-server-allow-20260826 76f9462] Checkpoint hostname scan 13254/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 13254/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##################------------]  60.48% 13300/21989 | LIVE=4765 DNS_WEB_DEAD=1314 NXDOMAIN=1833 UNCERTAIN=5388 | rate=20.21 host/s active=64 oldest=8.1s last=profc24.ru checkpoint=53
+[PROGRESS] [##################------------]  60.94% 13400/21989 | LIVE=4832 DNS_WEB_DEAD=1318 NXDOMAIN=1854 UNCERTAIN=5396 | rate=20.24 host/s active=64 oldest=4.2s last=prommorpg.ru checkpoint=53
+[PROGRESS] [##################------------]  61.39% 13500/21989 | LIVE=4881 DNS_WEB_DEAD=1324 NXDOMAIN=1866 UNCERTAIN=5429 | rate=20.26 host/s active=64 oldest=7.6s last=psyhelpn.ru checkpoint=53
+[build-ru-blocked-server-allow-20260826 71d4965] Checkpoint hostname scan 13504/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 13504/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##################------------]  61.85% 13600/21989 | LIVE=4915 DNS_WEB_DEAD=1329 NXDOMAIN=1871 UNCERTAIN=5485 | rate=20.22 host/s active=64 oldest=9.0s last=qptop.ru checkpoint=54
+[PROGRESS] [##################------------]  62.30% 13700/21989 | LIVE=4945 DNS_WEB_DEAD=1330 NXDOMAIN=1882 UNCERTAIN=5543 | rate=20.25 host/s active=64 oldest=6.5s last=rascvetai-yanino.ru checkpoint=54
+[build-ru-blocked-server-allow-20260826 2346627] Checkpoint hostname scan 13754/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 13754/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##################------------]  62.76% 13800/21989 | LIVE=4972 DNS_WEB_DEAD=1331 NXDOMAIN=1903 UNCERTAIN=5594 | rate=20.19 host/s active=64 oldest=8.3s last=recaro-store.ru checkpoint=55
+[PROGRESS] [##################------------]  63.21% 13900/21989 | LIVE=4972 DNS_WEB_DEAD=1395 NXDOMAIN=1916 UNCERTAIN=5617 | rate=20.06 host/s active=64 oldest=7.1s last=remkolor.ru checkpoint=55
+[PROGRESS] [###################-----------]  63.67% 14000/21989 | LIVE=4972 DNS_WEB_DEAD=1451 NXDOMAIN=1950 UNCERTAIN=5627 | rate=20.00 host/s active=64 oldest=8.5s last=rgd-online.ru checkpoint=55
+[build-ru-blocked-server-allow-20260826 ad8d720] Checkpoint hostname scan 14004/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 14004/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###################-----------]  64.58% 14200/21989 | LIVE=4972 DNS_WEB_DEAD=1585 NXDOMAIN=2005 UNCERTAIN=5638 | rate=19.81 host/s active=64 oldest=6.6s last=rocketsciencefest.ru checkpoint=56
+[build-ru-blocked-server-allow-20260826 a8c14f4] Checkpoint hostname scan 14255/21989
+ 3 files changed, 268 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 14255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###################-----------]  65.49% 14400/21989 | LIVE=4972 DNS_WEB_DEAD=1725 NXDOMAIN=2047 UNCERTAIN=5656 | rate=19.63 host/s active=64 oldest=6.7s last=ru-zoloto.ru checkpoint=57
+[PROGRESS] [###################-----------]  65.94% 14500/21989 | LIVE=4972 DNS_WEB_DEAD=1812 NXDOMAIN=2057 UNCERTAIN=5659 | rate=19.52 host/s active=64 oldest=6.5s last=ruscompromat.ru checkpoint=57
+[build-ru-blocked-server-allow-20260826 caf6114] Checkpoint hostname scan 14505/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 14505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###################-----------]  66.40% 14600/21989 | LIVE=4972 DNS_WEB_DEAD=1883 NXDOMAIN=2081 UNCERTAIN=5664 | rate=19.38 host/s active=64 oldest=6.3s last=rz.soltop.ru checkpoint=58
+[PROGRESS] [####################----------]  66.85% 14700/21989 | LIVE=4972 DNS_WEB_DEAD=1946 NXDOMAIN=2113 UNCERTAIN=5669 | rate=19.35 host/s active=64 oldest=6.4s last=safarirf.ru checkpoint=58
+[build-ru-blocked-server-allow-20260826 712cfc4] Checkpoint hostname scan 14755/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 14755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [####################----------]  67.31% 14800/21989 | LIVE=4972 DNS_WEB_DEAD=2001 NXDOMAIN=2140 UNCERTAIN=5687 | rate=19.28 host/s active=64 oldest=9.9s last=scam4.ru checkpoint=59
+[PROGRESS] [####################----------]  67.76% 14900/21989 | LIVE=4972 DNS_WEB_DEAD=2067 NXDOMAIN=2172 UNCERTAIN=5689 | rate=19.20 host/s active=64 oldest=6.2s last=scheglov-pesni.ru checkpoint=59
+[build-ru-blocked-server-allow-20260826 832e92f] Checkpoint hostname scan 15005/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 15005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [####################----------]  68.67% 15100/21989 | LIVE=4972 DNS_WEB_DEAD=2193 NXDOMAIN=2218 UNCERTAIN=5717 | rate=19.04 host/s active=64 oldest=6.3s last=sertifikatmed.ru checkpoint=60
+[PROGRESS] [####################----------]  69.13% 15200/21989 | LIVE=4972 DNS_WEB_DEAD=2268 NXDOMAIN=2240 UNCERTAIN=5720 | rate=19.01 host/s active=64 oldest=6.9s last=sexeducationonline.ru checkpoint=60
+[build-ru-blocked-server-allow-20260826 f6553a3] Checkpoint hostname scan 15255/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 15255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####################---------]  70.04% 15400/21989 | LIVE=5021 DNS_WEB_DEAD=2343 NXDOMAIN=2297 UNCERTAIN=5739 | rate=18.90 host/s active=64 oldest=6.5s last=shopss1.ru checkpoint=61
+[PROGRESS] [#####################---------]  70.49% 15500/21989 | LIVE=5021 DNS_WEB_DEAD=2416 NXDOMAIN=2317 UNCERTAIN=5746 | rate=18.84 host/s active=64 oldest=7.4s last=skins-prof.ru checkpoint=61
+[build-ru-blocked-server-allow-20260826 144efe3] Checkpoint hostname scan 15505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 15505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####################---------]  70.94% 15600/21989 | LIVE=5021 DNS_WEB_DEAD=2470 NXDOMAIN=2343 UNCERTAIN=5766 | rate=18.73 host/s active=64 oldest=10.0s last=skpskov.ru checkpoint=62
+[PROGRESS] [#####################---------]  71.40% 15700/21989 | LIVE=5021 DNS_WEB_DEAD=2549 NXDOMAIN=2361 UNCERTAIN=5769 | rate=18.70 host/s active=64 oldest=6.4s last=smm-team.ru checkpoint=62
+[build-ru-blocked-server-allow-20260826 285d6cf] Checkpoint hostname scan 15755/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 15755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####################---------]  71.85% 15800/21989 | LIVE=5033 DNS_WEB_DEAD=2605 NXDOMAIN=2376 UNCERTAIN=5786 | rate=18.66 host/s active=64 oldest=7.3s last=sotremont.ru checkpoint=63
+[PROGRESS] [#####################---------]  72.31% 15900/21989 | LIVE=5103 DNS_WEB_DEAD=2607 NXDOMAIN=2393 UNCERTAIN=5797 | rate=18.69 host/s active=64 oldest=8.9s last=spb-dpln1.ru checkpoint=63
+[PROGRESS] [#####################---------]  72.76% 16000/21989 | LIVE=5146 DNS_WEB_DEAD=2613 NXDOMAIN=2399 UNCERTAIN=5842 | rate=18.71 host/s active=64 oldest=8.7s last=sportmission.ru checkpoint=63
+[build-ru-blocked-server-allow-20260826 4bcb412] Checkpoint hostname scan 16005/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 16005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#####################---------]  73.22% 16100/21989 | LIVE=5153 DNS_WEB_DEAD=2633 NXDOMAIN=2408 UNCERTAIN=5906 | rate=18.61 host/s active=64 oldest=10.3s last=stapardent.ru checkpoint=64
+[PROGRESS] [######################--------]  73.67% 16200/21989 | LIVE=5215 DNS_WEB_DEAD=2636 NXDOMAIN=2432 UNCERTAIN=5917 | rate=18.64 host/s active=64 oldest=9.3s last=stagnum.ru checkpoint=64
+[build-ru-blocked-server-allow-20260826 e642f49] Checkpoint hostname scan 16255/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 16255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######################--------]  74.13% 16300/21989 | LIVE=5231 DNS_WEB_DEAD=2691 NXDOMAIN=2437 UNCERTAIN=5941 | rate=18.53 host/s active=64 oldest=10.9s last=stroikomff.ru checkpoint=65
+[PROGRESS] [######################--------]  74.58% 16400/21989 | LIVE=5281 DNS_WEB_DEAD=2693 NXDOMAIN=2459 UNCERTAIN=5967 | rate=18.58 host/s active=64 oldest=3.6s last=svpressa-yug.ru checkpoint=65
+[PROGRESS] [######################--------]  75.04% 16500/21989 | LIVE=5322 DNS_WEB_DEAD=2694 NXDOMAIN=2489 UNCERTAIN=5995 | rate=18.62 host/s active=64 oldest=6.7s last=syonen-animego.ru checkpoint=65
+[build-ru-blocked-server-allow-20260826 f6d49c4] Checkpoint hostname scan 16505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 16505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######################--------]  75.49% 16600/21989 | LIVE=5357 DNS_WEB_DEAD=2699 NXDOMAIN=2495 UNCERTAIN=6049 | rate=18.59 host/s active=64 oldest=11.9s last=tarakona.ru checkpoint=66
+[PROGRESS] [######################--------]  75.95% 16700/21989 | LIVE=5392 DNS_WEB_DEAD=2703 NXDOMAIN=2500 UNCERTAIN=6105 | rate=18.62 host/s active=64 oldest=6.9s last=techtravel.ru checkpoint=66
+[build-ru-blocked-server-allow-20260826 5dab4d7] Checkpoint hostname scan 16755/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 16755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [######################--------]  76.40% 16800/21989 | LIVE=5410 DNS_WEB_DEAD=2706 NXDOMAIN=2516 UNCERTAIN=6168 | rate=18.60 host/s active=64 oldest=10.0s last=thebeatlesfest.ru checkpoint=67
+[PROGRESS] [#######################-------]  76.86% 16900/21989 | LIVE=5462 DNS_WEB_DEAD=2713 NXDOMAIN=2534 UNCERTAIN=6191 | rate=18.62 host/s active=64 oldest=11.0s last=thebestsecretary.ru checkpoint=67
+[PROGRESS] [#######################-------]  77.31% 17000/21989 | LIVE=5498 DNS_WEB_DEAD=2719 NXDOMAIN=2542 UNCERTAIN=6241 | rate=18.65 host/s active=64 oldest=8.7s last=tkpiuk.ru checkpoint=67
+[build-ru-blocked-server-allow-20260826 6e96264] Checkpoint hostname scan 17005/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 17005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#######################-------]  77.77% 17100/21989 | LIVE=5534 DNS_WEB_DEAD=2720 NXDOMAIN=2555 UNCERTAIN=6291 | rate=18.60 host/s active=64 oldest=12.7s last=toshibuvpn.ru checkpoint=68
+[PROGRESS] [#######################-------]  78.22% 17200/21989 | LIVE=5595 DNS_WEB_DEAD=2724 NXDOMAIN=2565 UNCERTAIN=6316 | rate=18.60 host/s active=64 oldest=8.2s last=treyder-otzyvy.ru checkpoint=68
+[build-ru-blocked-server-allow-20260826 d91257b] Checkpoint hostname scan 17255/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 17255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#######################-------]  79.13% 17400/21989 | LIVE=5601 DNS_WEB_DEAD=2828 NXDOMAIN=2618 UNCERTAIN=6353 | rate=18.49 host/s active=64 oldest=13.1s last=tuttopepe.ru checkpoint=69
+[PROGRESS] [#######################-------]  79.59% 17500/21989 | LIVE=5602 DNS_WEB_DEAD=2900 NXDOMAIN=2641 UNCERTAIN=6357 | rate=18.44 host/s active=64 oldest=6.1s last=u106.ru checkpoint=69
+[build-ru-blocked-server-allow-20260826 33525de] Checkpoint hostname scan 17505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 17505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [########################------]  80.04% 17600/21989 | LIVE=5624 DNS_WEB_DEAD=2923 NXDOMAIN=2665 UNCERTAIN=6388 | rate=18.39 host/s active=64 oldest=10.1s last=udametyn.ru checkpoint=70
+[PROGRESS] [########################------]  80.49% 17700/21989 | LIVE=5653 DNS_WEB_DEAD=2969 NXDOMAIN=2686 UNCERTAIN=6392 | rate=18.34 host/s active=64 oldest=8.5s last=urbansushi.ru checkpoint=70
+[build-ru-blocked-server-allow-20260826 1916dd9] Checkpoint hostname scan 17755/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 17755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [########################------]  80.95% 17800/21989 | LIVE=5653 DNS_WEB_DEAD=3043 NXDOMAIN=2691 UNCERTAIN=6413 | rate=18.27 host/s active=64 oldest=8.7s last=vashtyl67.ru checkpoint=71
+[PROGRESS] [########################------]  81.86% 18000/21989 | LIVE=5653 DNS_WEB_DEAD=3179 NXDOMAIN=2745 UNCERTAIN=6423 | rate=18.18 host/s active=64 oldest=6.9s last=via-cheboksary.ru checkpoint=71
+[build-ru-blocked-server-allow-20260826 34130c4] Checkpoint hostname scan 18005/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 18005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [########################------]  82.31% 18100/21989 | LIVE=5669 DNS_WEB_DEAD=3218 NXDOMAIN=2772 UNCERTAIN=6441 | rate=18.08 host/s active=64 oldest=5.7s last=virtual-chat.ru checkpoint=72
+[PROGRESS] [########################------]  82.77% 18200/21989 | LIVE=5723 DNS_WEB_DEAD=3238 NXDOMAIN=2796 UNCERTAIN=6443 | rate=18.11 host/s active=64 oldest=9.8s last=vortexhookah.ru checkpoint=72
+[build-ru-blocked-server-allow-20260826 15bba4a] Checkpoint hostname scan 18255/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 18255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########################-----]  83.68% 18400/21989 | LIVE=5813 DNS_WEB_DEAD=3262 NXDOMAIN=2838 UNCERTAIN=6487 | rate=18.10 host/s active=64 oldest=3.2s last=w.casigg.ru checkpoint=73
+[PROGRESS] [#########################-----]  84.13% 18500/21989 | LIVE=5852 DNS_WEB_DEAD=3263 NXDOMAIN=2853 UNCERTAIN=6532 | rate=18.14 host/s active=64 oldest=6.5s last=witiger.ru checkpoint=73
+[build-ru-blocked-server-allow-20260826 2020138] Checkpoint hostname scan 18505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 18505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########################-----]  84.59% 18600/21989 | LIVE=5898 DNS_WEB_DEAD=3266 NXDOMAIN=2863 UNCERTAIN=6573 | rate=18.10 host/s active=64 oldest=13.4s last=www.a-buldakov.ru checkpoint=74
+[PROGRESS] [#########################-----]  85.04% 18700/21989 | LIVE=5953 DNS_WEB_DEAD=3266 NXDOMAIN=2865 UNCERTAIN=6616 | rate=18.12 host/s active=64 oldest=11.6s last=www.biletideshevo.ru checkpoint=74
+[build-ru-blocked-server-allow-20260826 1be9397] Checkpoint hostname scan 18755/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 18755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#########################-----]  85.95% 18900/21989 | LIVE=6060 DNS_WEB_DEAD=3271 NXDOMAIN=2877 UNCERTAIN=6692 | rate=18.12 host/s active=64 oldest=11.4s last=www.krasdin.ru checkpoint=75
+[PROGRESS] [#########################-----]  86.41% 19000/21989 | LIVE=6111 DNS_WEB_DEAD=3273 NXDOMAIN=2878 UNCERTAIN=6738 | rate=18.13 host/s active=64 oldest=14.3s last=www.nt2005.ru checkpoint=75
+[build-ru-blocked-server-allow-20260826 511027b] Checkpoint hostname scan 19005/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 19005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##########################----]  87.32% 19200/21989 | LIVE=6229 DNS_WEB_DEAD=3278 NXDOMAIN=2885 UNCERTAIN=6808 | rate=18.11 host/s active=64 oldest=7.5s last=www.skapetersburg.ru checkpoint=76
+[build-ru-blocked-server-allow-20260826 1a92be0] Checkpoint hostname scan 19255/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 19255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##########################----]  88.23% 19400/21989 | LIVE=6320 DNS_WEB_DEAD=3283 NXDOMAIN=2903 UNCERTAIN=6894 | rate=18.11 host/s active=64 oldest=8.4s last=www.zapsibregion.ru checkpoint=77
+[PROGRESS] [##########################----]  88.68% 19500/21989 | LIVE=6356 DNS_WEB_DEAD=3284 NXDOMAIN=2922 UNCERTAIN=6938 | rate=18.15 host/s active=64 oldest=7.1s last=xn-----8kcfckh1afgfi2blzb6af4m.xn--p1ai checkpoint=77
+[build-ru-blocked-server-allow-20260826 68bf9e3] Checkpoint hostname scan 19505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 19505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [##########################----]  89.14% 19600/21989 | LIVE=6396 DNS_WEB_DEAD=3285 NXDOMAIN=2931 UNCERTAIN=6988 | rate=18.12 host/s active=64 oldest=14.3s last=xn----381-4ve8czbqe.xn--p1ai checkpoint=78
+[PROGRESS] [##########################----]  89.59% 19700/21989 | LIVE=6425 DNS_WEB_DEAD=3288 NXDOMAIN=2946 UNCERTAIN=7041 | rate=18.15 host/s active=64 oldest=4.0s last=xn----7sbbaev7add3b9c0b.xn--p1ai checkpoint=78
+[build-ru-blocked-server-allow-20260826 c50a84d] Checkpoint hostname scan 19755/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 19755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########################---]  90.50% 19900/21989 | LIVE=6483 DNS_WEB_DEAD=3288 NXDOMAIN=2976 UNCERTAIN=7153 | rate=18.18 host/s active=64 oldest=12.5s last=xn----7sbwibgdteba1c3d.xn--p1ai checkpoint=79
+[PROGRESS] [###########################---]  90.95% 20000/21989 | LIVE=6512 DNS_WEB_DEAD=3288 NXDOMAIN=2988 UNCERTAIN=7212 | rate=18.19 host/s active=64 oldest=12.8s last=xn----8sbcbn5acyide0a8d.xn--p1ai checkpoint=79
+[build-ru-blocked-server-allow-20260826 4366f28] Checkpoint hostname scan 20005/21989
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+[CHECKPOINT] Persisted 20005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########################---]  91.41% 20100/21989 | LIVE=6549 DNS_WEB_DEAD=3293 NXDOMAIN=3003 UNCERTAIN=7255 | rate=18.17 host/s active=64 oldest=11.5s last=xn----9sbmj2afc2a7h.xn--p1ai checkpoint=80
+[PROGRESS] [###########################---]  91.86% 20200/21989 | LIVE=6593 DNS_WEB_DEAD=3295 NXDOMAIN=3029 UNCERTAIN=7283 | rate=18.21 host/s active=64 oldest=13.3s last=xn----dtbfcabjpba7bfuqcplgm.xn--p1ai checkpoint=80
+[build-ru-blocked-server-allow-20260826 317d2c8] Checkpoint hostname scan 20255/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 20255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [###########################---]  92.77% 20400/21989 | LIVE=6640 DNS_WEB_DEAD=3296 NXDOMAIN=3044 UNCERTAIN=7420 | rate=18.21 host/s active=64 oldest=4.2s last=xn--14-6kc3bfr2e.xn--p1ai checkpoint=81
+[PROGRESS] [###########################---]  93.23% 20500/21989 | LIVE=6674 DNS_WEB_DEAD=3297 NXDOMAIN=3059 UNCERTAIN=7470 | rate=18.25 host/s active=64 oldest=7.5s last=xn--3-7sbbd6becxwlk7d.xn--p1ai checkpoint=81
+[build-ru-blocked-server-allow-20260826 f4970b6] Checkpoint hostname scan 20505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 20505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############################--]  93.68% 20600/21989 | LIVE=6707 DNS_WEB_DEAD=3300 NXDOMAIN=3077 UNCERTAIN=7516 | rate=18.23 host/s active=64 oldest=11.6s last=xn--63-6kc5apeki.xn--p1ai checkpoint=82
+[PROGRESS] [############################--]  94.14% 20700/21989 | LIVE=6745 DNS_WEB_DEAD=3304 NXDOMAIN=3084 UNCERTAIN=7567 | rate=18.25 host/s active=64 oldest=12.6s last=xn--80aacpqiegwniboicv3k4c.xn--p1ai checkpoint=82
+[build-ru-blocked-server-allow-20260826 8f54beb] Checkpoint hostname scan 20755/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 20755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############################--]  95.05% 20900/21989 | LIVE=6824 DNS_WEB_DEAD=3311 NXDOMAIN=3109 UNCERTAIN=7656 | rate=18.26 host/s active=64 oldest=13.1s last=xn--80acgdf0avgh0cb6e.xn--p1ai checkpoint=83
+[PROGRESS] [############################--]  95.50% 21000/21989 | LIVE=6868 DNS_WEB_DEAD=3315 NXDOMAIN=3124 UNCERTAIN=7693 | rate=18.27 host/s active=64 oldest=8.3s last=xn--80afeno7a9c.xn--p1ai checkpoint=83
+[build-ru-blocked-server-allow-20260826 64439d2] Checkpoint hostname scan 21005/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 21005/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [############################--]  96.41% 21200/21989 | LIVE=6934 DNS_WEB_DEAD=3319 NXDOMAIN=3152 UNCERTAIN=7795 | rate=18.27 host/s active=64 oldest=3.8s last=xn--90aeeang6bkbdldq9byd.xn--p1ai checkpoint=84
+[build-ru-blocked-server-allow-20260826 4a694b6] Checkpoint hostname scan 21255/21989
+ 3 files changed, 268 insertions(+), 18 deletions(-)
+[CHECKPOINT] Persisted 21255/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############################-]  96.87% 21300/21989 | LIVE=6963 DNS_WEB_DEAD=3321 NXDOMAIN=3155 UNCERTAIN=7861 | rate=18.25 host/s active=64 oldest=10.5s last=xn--b1aedamcbaxrlfzpa.xn--p1ai checkpoint=85
+[PROGRESS] [#############################-]  97.32% 21400/21989 | LIVE=7005 DNS_WEB_DEAD=3322 NXDOMAIN=3170 UNCERTAIN=7903 | rate=18.26 host/s active=64 oldest=14.8s last=xn--e1ajidcocns.xn--p1ai checkpoint=85
+[PROGRESS] [#############################-]  97.78% 21500/21989 | LIVE=7028 DNS_WEB_DEAD=3326 NXDOMAIN=3175 UNCERTAIN=7971 | rate=18.29 host/s active=64 oldest=7.1s last=xn--h1anicb.xn--p1ai checkpoint=85
+[build-ru-blocked-server-allow-20260826 408e50a] Checkpoint hostname scan 21505/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 21505/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############################-]  98.23% 21600/21989 | LIVE=7058 DNS_WEB_DEAD=3327 NXDOMAIN=3196 UNCERTAIN=8019 | rate=18.28 host/s active=64 oldest=11.7s last=you-tk.ru checkpoint=86
+[PROGRESS] [#############################-]  98.69% 21700/21989 | LIVE=7116 DNS_WEB_DEAD=3331 NXDOMAIN=3206 UNCERTAIN=8047 | rate=18.30 host/s active=64 oldest=5.6s last=zakupka-shop.ru checkpoint=86
+[build-ru-blocked-server-allow-20260826 a57570c] Checkpoint hostname scan 21755/21989
+ 3 files changed, 269 insertions(+), 19 deletions(-)
+[CHECKPOINT] Persisted 21755/21989 to branch build-ru-blocked-server-allow-20260826
+[PROGRESS] [#############################-]  99.14% 21800/21989 | LIVE=7133 DNS_WEB_DEAD=3337 NXDOMAIN=3209 UNCERTAIN=8121 | rate=18.27 host/s active=64 oldest=8.6s last=yo.casi3x.ru checkpoint=87
+[PROGRESS] [#############################-]  99.60% 21900/21989 | LIVE=7183 DNS_WEB_DEAD=3339 NXDOMAIN=3227 UNCERTAIN=8151 | rate=18.29 host/s active=64 oldest=12.4s last=zeus-hades-gods-of-war.ru checkpoint=87
+[PROGRESS] [##############################] 100.00% 21989/21989 | LIVE=7221 DNS_WEB_DEAD=3343 NXDOMAIN=3236 UNCERTAIN=8189 | rate=18.19 host/s active=0 oldest=0.0s last=zvzda.ru checkpoint=87
+========================================================================
+DOMAIN CHECK COMPLETED
+========================================================================
+INPUT:                    21,989
+01 LIVE_WEB:              7,221
+02 DNS_ALIVE_WEB_DEAD:    3,343
+03 NXDOMAIN_DEAD:         3,236
+04 UNCERTAIN_RECHECK:     8,189
+TOTAL:                    21,989
+Missing:                  0
+Duplicates:               0
+Persistent checkpoint warnings: 0

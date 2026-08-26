@@ -1,0 +1,14 @@
+DOMAIN CHECK COMPLETED
+======================
+timestamp_utc=2026-08-26T22:35:17Z
+input_sha256=58fc019a2038a5ffe036886c66ddd09dd6b4c9f121777cf783466c5bee9054b2
+input=21989
+01_LIVE_WEB=7221
+02_DNS_ALIVE_WEB_DEAD=3343
+03_NXDOMAIN_DEAD=3236
+04_UNCERTAIN_RECHECK=8189
+class_total=21989
+classified_input_members=21989
+missing=0
+invalid_class=0
+duplicates=0
