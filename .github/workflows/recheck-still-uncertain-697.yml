@@ -1,0 +1,112 @@
+name: Recheck 697 still uncertain hostnames
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/recheck-still-uncertain-697.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  recheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp dnspython
+
+      - name: Validate input
+        run: |
+          python -m py_compile scripts/recheck_uncertain.py
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('generated/domain-check/recheck-04/04_STILL_UNCERTAIN.txt')
+          items = [x.strip() for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
+          assert len(items) == 697, len(items)
+          assert len(items) == len(set(items)), 'duplicate hostnames in 697 input'
+          print(f'validated_still_uncertain_input={len(items)}')
+          PY
+
+      - name: Run low-load final uncertain recheck
+        id: recheck
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/recheck_uncertain.py \
+            --input generated/domain-check/recheck-04/04_STILL_UNCERTAIN.txt \
+            --output-dir generated/domain-check/recheck-04-final-697 \
+            --state-dir state/recheck-04-final-697 \
+            --expected-count 697 \
+            --concurrency 4 \
+            --dns-query-concurrency 6 \
+            --dns-timeout 8 \
+            --dns-hard-timeout 45 \
+            --http-connect-timeout 5 \
+            --http-total-timeout 15 \
+            --hostname-hard-timeout 90 \
+            --max-redirects 10 \
+            --progress-every 20 \
+            --heartbeat-seconds 30 \
+            --watchdog-seconds 180 \
+            --checkpoint-every 50 \
+            --checkpoint-seconds 120 \
+            --soft-limit-seconds 9000 \
+            --git-checkpoint \
+            2>&1 | tee recheck-still-uncertain-697.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Persist results
+        if: always()
+        run: |
+          git add state/recheck-04-final-697 generated/domain-check/recheck-04-final-697 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist final 697 uncertain hostname recheck results"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-697-uncertain-diagnostics
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            recheck-still-uncertain-697.log
+            state/recheck-04-final-697/
+            generated/domain-check/recheck-04-final-697/
+
+      - name: Fail if final recheck failed or paused
+        if: always()
+        run: |
+          code="${{ steps.recheck.outputs.exit_code }}"
+          echo "final_recheck_exit_code=$code"
+          if [ -z "$code" ] || [ "$code" != "0" ]; then
+            exit 1
+          fi
