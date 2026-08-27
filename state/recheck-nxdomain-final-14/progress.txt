@@ -1,12 +1,12 @@
-status=RUNNING
-timestamp_utc=2026-08-27T12:25:42Z
+status=COMPLETE
+timestamp_utc=2026-08-27T12:25:44Z
 progress=14/14
 percent=100.00
 01_CONFIRMED_NXDOMAIN=14
 02_DNS_ALIVE_RESCUED=0
 03_INCONSISTENT_DNS=0
 04_UNCERTAIN_RECHECK=0
-rate_host_per_sec=0.39
+rate_host_per_sec=0.38
 last_hostname=shkola4-z.ru
 active_workers=0
-checkpoint_number=13
+checkpoint_number=15

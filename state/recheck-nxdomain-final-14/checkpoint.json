@@ -1,5 +1,5 @@
 {
-  "checkpoint_number": 14,
+  "checkpoint_number": 15,
   "config": {
     "dns_query_concurrency": 4,
     "dns_timeout": 8.0,
@@ -23,7 +23,7 @@
   "input_sha256": "eb86007bf0afe30dcf5ed2d42e484e0c13ad5049a9d00feb2e4e07b064ab6d37",
   "processed_count": 14,
   "remaining_count": 0,
-  "status": "RUNNING",
-  "timestamp_utc": "2026-08-27T12:25:42Z",
+  "status": "COMPLETE",
+  "timestamp_utc": "2026-08-27T12:25:44Z",
   "version": 1
 }

@@ -1,0 +1,13 @@
+NXDOMAIN CONFIRMATION COMPLETED
+===============================
+timestamp_utc=2026-08-27T12:25:44Z
+input_sha256=eb86007bf0afe30dcf5ed2d42e484e0c13ad5049a9d00feb2e4e07b064ab6d37
+input=14
+01_CONFIRMED_NXDOMAIN=14
+02_DNS_ALIVE_RESCUED=0
+03_INCONSISTENT_DNS=0
+04_UNCERTAIN_RECHECK=0
+class_total=14
+missing=0
+invalid_class=0
+duplicates=0
