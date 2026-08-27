@@ -1,0 +1,12 @@
+status=RUNNING
+timestamp_utc=2026-08-27T12:25:09Z
+progress=1/14
+percent=7.14
+01_CONFIRMED_NXDOMAIN=1
+02_DNS_ALIVE_RESCUED=0
+03_INCONSISTENT_DNS=0
+04_UNCERTAIN_RECHECK=0
+rate_host_per_sec=0.42
+last_hostname=mirkmf.ru
+active_workers=2
+checkpoint_number=0
