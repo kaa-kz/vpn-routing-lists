@@ -1,0 +1,218 @@
+name: Build ru-blocked-cleaned client artifacts
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - scripts/build_ru_blocked_cleaned_clients.py
+      - .github/workflows/build-ru-blocked-cleaned-clients.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  BRANCH_NAME: build-ru-blocked-server-allow-20260826
+  INPUT_FILE: generated/final/ru-blocked-server-allow.cleaned.txt
+  OUTPUT_DIR: generated/clients/ru-blocked-cleaned
+  EXPECTED_COUNT: "15759"
+  EXPECTED_INPUT_SHA256: 1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate canonical input
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$INPUT_FILE"
+          actual_count="$(sed '/^[[:space:]]*$/d' "$INPUT_FILE" | wc -l | tr -d ' ')"
+          actual_sha="$(sha256sum "$INPUT_FILE" | awk '{print $1}')"
+          test "$actual_count" = "$EXPECTED_COUNT"
+          test "$actual_sha" = "$EXPECTED_INPUT_SHA256"
+          echo "canonical_count=$actual_count"
+          echo "canonical_sha256=$actual_sha"
+
+      - name: Build exact hostname text artifacts
+        run: |
+          python scripts/build_ru_blocked_cleaned_clients.py \
+            --input "$INPUT_FILE" \
+            --output-dir "$OUTPUT_DIR" \
+            --expected-count "$EXPECTED_COUNT"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.12"
+          cache: false
+
+      - name: Build geosite.dat with official V2Fly generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/domain-list-community
+          git clone --depth 1 https://github.com/v2fly/domain-list-community.git /tmp/domain-list-community
+          cd /tmp/domain-list-community
+          go mod download
+          go run ./ \
+            --datapath="$GITHUB_WORKSPACE/$OUTPUT_DIR/geosite-source" \
+            --outputname=geosite.dat \
+            --outputdir="$GITHUB_WORKSPACE/$OUTPUT_DIR" \
+            --exportlists=ru-blocked-cleaned
+
+      - name: Validate geosite.dat category and exact rule count
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/domain-list-community/validate_geosite_tmp.go <<'GO'
+          package main
+
+          import (
+            "fmt"
+            "os"
+            "strings"
+
+            router "github.com/v2fly/v2ray-core/v5/app/router/routercommon"
+            "google.golang.org/protobuf/proto"
+          )
+
+          func main() {
+            if len(os.Args) != 3 {
+              panic("usage: validator geosite.dat expected-count")
+            }
+            var expected int
+            if _, err := fmt.Sscanf(os.Args[2], "%d", &expected); err != nil {
+              panic(err)
+            }
+            b, err := os.ReadFile(os.Args[1])
+            if err != nil { panic(err) }
+            var list router.GeoSiteList
+            if err := proto.Unmarshal(b, &list); err != nil { panic(err) }
+            if len(list.Entry) != 1 {
+              panic(fmt.Sprintf("expected exactly 1 geosite category, got %d", len(list.Entry)))
+            }
+            site := list.Entry[0]
+            if !strings.EqualFold(site.CountryCode, "ru-blocked-cleaned") {
+              panic(fmt.Sprintf("unexpected category: %q", site.CountryCode))
+            }
+            if len(site.Domain) != expected {
+              panic(fmt.Sprintf("expected %d domains, got %d", expected, len(site.Domain)))
+            }
+            for i, d := range site.Domain {
+              if d.Type != router.Domain_Full {
+                panic(fmt.Sprintf("entry %d is not FULL: %v", i, d.Type))
+              }
+            }
+            fmt.Printf("geosite_category=%s\n", site.CountryCode)
+            fmt.Printf("geosite_exact_full_count=%d\n", len(site.Domain))
+          }
+          GO
+          cd /tmp/domain-list-community
+          go run ./validate_geosite_tmp.go "$GITHUB_WORKSPACE/$OUTPUT_DIR/geosite.dat" "$EXPECTED_COUNT"
+          rm -f validate_geosite_tmp.go
+
+      - name: Cross-check exported plaintext and build manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import os
+
+          root = Path(os.environ['OUTPUT_DIR'])
+          expected = int(os.environ['EXPECTED_COUNT'])
+          source = Path(os.environ['INPUT_FILE'])
+          shadow = root / 'ru-blocked-cleaned.list'
+          plain = root / 'ru-blocked-cleaned.txt'
+          dat = root / 'geosite.dat'
+          geo_source = root / 'geosite-source' / 'ru-blocked-cleaned'
+
+          canonical = [x.strip() for x in source.read_text(encoding='utf-8').splitlines() if x.strip()]
+          shadow_domains = [x.split(',', 1)[1] for x in shadow.read_text(encoding='utf-8').splitlines() if x]
+          plain_lines = [x.strip() for x in plain.read_text(encoding='utf-8').splitlines() if x.strip()]
+          plain_domains = [x[5:] for x in plain_lines if x.startswith('full:')]
+          source_lines = [x.strip() for x in geo_source.read_text(encoding='utf-8').splitlines() if x.strip()]
+
+          assert len(canonical) == expected
+          assert shadow_domains == canonical
+          assert len(plain_lines) == expected and len(plain_domains) == expected
+          assert plain_domains == canonical
+          assert len(source_lines) == expected and all(x.startswith('full:') for x in source_lines)
+          assert dat.stat().st_size > 0
+
+          def sha(path: Path) -> str:
+              return hashlib.sha256(path.read_bytes()).hexdigest()
+
+          manifest = root / 'manifest.txt'
+          manifest.write_text(
+              '\n'.join([
+                  'RU-BLOCKED-CLEANED CLIENT ARTIFACTS',
+                  '===================================',
+                  f'hostname_count={expected}',
+                  'matching_semantics=exact_hostname',
+                  'shadowrocket_rule_type=DOMAIN',
+                  'happ_geosite_category=geosite:ru-blocked-cleaned',
+                  f'canonical_input_sha256={sha(source)}',
+                  f'shadowrocket_list_sha256={sha(shadow)}',
+                  f'geosite_dat_sha256={sha(dat)}',
+                  f'geosite_plain_sha256={sha(plain)}',
+                  '',
+              ]),
+              encoding='utf-8',
+          )
+
+          branch = os.environ['BRANCH_NAME']
+          base = f'https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/{branch}/generated/clients/ru-blocked-cleaned'
+          usage = root / 'USAGE.txt'
+          usage.write_text(
+              '\n'.join([
+                  'Shadowrocket:',
+                  f'RULE-SET,{base}/ru-blocked-cleaned.list,DIRECT',
+                  '',
+                  'Happ:',
+                  f'Geositeurl: {base}/geosite.dat',
+                  'DirectSites: geosite:ru-blocked-cleaned',
+                  '',
+              ]),
+              encoding='utf-8',
+          )
+          print(manifest.read_text(encoding='utf-8'))
+          PY
+
+      - name: Persist generated client artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add "$OUTPUT_DIR"
+          if ! git diff --cached --quiet; then
+            git commit -m "Build ru-blocked-cleaned client artifacts"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ru-blocked-cleaned-clients
+          retention-days: 30
+          path: generated/clients/ru-blocked-cleaned/
