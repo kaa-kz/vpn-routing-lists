@@ -1,0 +1,191 @@
+name: Finalize 690 and build cleaned list
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/finalize-690-and-build-list.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependency
+        run: |
+          python -m pip install --upgrade pip
+          pip install dnspython
+
+      - name: Build and validate final 690 input
+        run: |
+          set -euo pipefail
+          mkdir -p generated/domain-check/final-690
+          cat \
+            generated/domain-check/recheck-04-final-697/04_STILL_UNCERTAIN.txt \
+            generated/domain-check/recheck-nxdomain-final-8/04_UNCERTAIN_RECHECK.txt \
+            | sed '/^[[:space:]]*$/d' | sort -u \
+            > generated/domain-check/final-690/input_00690.txt
+          python - <<'PY'
+          from pathlib import Path
+          a=[x.strip() for x in Path('generated/domain-check/recheck-04-final-697/04_STILL_UNCERTAIN.txt').read_text().splitlines() if x.strip()]
+          b=[x.strip() for x in Path('generated/domain-check/recheck-nxdomain-final-8/04_UNCERTAIN_RECHECK.txt').read_text().splitlines() if x.strip()]
+          m=[x.strip() for x in Path('generated/domain-check/final-690/input_00690.txt').read_text().splitlines() if x.strip()]
+          assert len(a)==682, len(a)
+          assert len(b)==8, len(b)
+          assert set(a).isdisjoint(set(b))
+          assert len(m)==690 and len(m)==len(set(m)), len(m)
+          print('validated_final_input=690')
+          PY
+          python -m py_compile scripts/confirm_nxdomain.py
+
+      - name: Run final strict DNS classification
+        id: dns
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/confirm_nxdomain.py \
+            --input generated/domain-check/final-690/input_00690.txt \
+            --output-dir generated/domain-check/final-690 \
+            --state-dir state/final-690 \
+            --expected-count 690 \
+            --concurrency 3 \
+            --dns-query-concurrency 6 \
+            --dns-timeout 8 \
+            --hostname-hard-timeout 180 \
+            --max-authoritative-ns 8 \
+            --progress-every 20 \
+            --heartbeat-seconds 30 \
+            --watchdog-seconds 240 \
+            --checkpoint-every 50 \
+            --checkpoint-seconds 120 \
+            --soft-limit-seconds 12000 \
+            --git-checkpoint \
+            2>&1 | tee final-690.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Build final consolidated lists
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          def read(p):
+              return [x.strip() for x in Path(p).read_text(encoding='utf-8').splitlines() if x.strip()]
+          def write(p, items):
+              Path(p).parent.mkdir(parents=True, exist_ok=True)
+              Path(p).write_text(('\n'.join(items)+'\n') if items else '', encoding='utf-8')
+
+          source = read('generated/ru-blocked-server-allow.txt')
+          source_set = set(source)
+          assert len(source)==21989 and len(source_set)==21989
+
+          old_nx = set(read('generated/domain-check/recheck-nxdomain/01_CONFIRMED_NXDOMAIN.txt'))
+          new14 = set(read('generated/domain-check/recheck-nxdomain-final-14/01_CONFIRMED_NXDOMAIN.txt'))
+          fdir = Path('generated/domain-check/final-690')
+          final_nx = set(read(fdir/'01_CONFIRMED_NXDOMAIN.txt'))
+          final_alive = set(read(fdir/'02_DNS_ALIVE_RESCUED.txt'))
+          final_inconsistent = set(read(fdir/'03_INCONSISTENT_DNS.txt'))
+          final_uncertain = set(read(fdir/'04_UNCERTAIN_RECHECK.txt'))
+          final_input = set(read(fdir/'input_00690.txt'))
+
+          classes=[final_nx,final_alive,final_inconsistent,final_uncertain]
+          assert set().union(*classes)==final_input
+          assert sum(len(x) for x in classes)==690
+
+          confirmed_nx = old_nx | new14 | final_nx
+          unresolved_keep = final_inconsistent | final_uncertain
+          cleaned = [h for h in source if h not in confirmed_nx]
+          known_keep = [h for h in source if h not in confirmed_nx and h not in unresolved_keep]
+          removed = [h for h in source if h in confirmed_nx]
+          unresolved = [h for h in source if h in unresolved_keep]
+
+          assert confirmed_nx <= source_set
+          assert unresolved_keep <= source_set
+          assert confirmed_nx.isdisjoint(unresolved_keep)
+          assert len(known_keep)+len(removed)+len(unresolved)==21989
+          assert len(cleaned)==len(known_keep)+len(unresolved)
+          assert len(set(cleaned))==len(cleaned)
+
+          out=Path('generated/final')
+          write(out/'ru-blocked-server-allow.cleaned.txt', cleaned)
+          write(out/'01_KEEP_KNOWN.txt', known_keep)
+          write(out/'02_CONFIRMED_NXDOMAIN_REMOVE.txt', removed)
+          write(out/'03_UNRESOLVED_KEEP.txt', unresolved)
+
+          sha=hashlib.sha256(Path(out/'ru-blocked-server-allow.cleaned.txt').read_bytes()).hexdigest()
+          summary=(
+              'FINAL CLEANED LIST COMPLETED\n'
+              '============================\n'
+              f'input=21989\n'
+              f'keep_known={len(known_keep)}\n'
+              f'confirmed_nxdomain_remove={len(removed)}\n'
+              f'unresolved_keep={len(unresolved)}\n'
+              f'final_cleaned_count={len(cleaned)}\n'
+              f'final_690_alive={len(final_alive)}\n'
+              f'final_690_confirmed_nxdomain={len(final_nx)}\n'
+              f'final_690_inconsistent={len(final_inconsistent)}\n'
+              f'final_690_uncertain={len(final_uncertain)}\n'
+              f'cleaned_sha256={sha}\n'
+              'missing=0\n'
+              'duplicates=0\n'
+          )
+          Path(out/'summary.txt').write_text(summary,encoding='utf-8')
+          print(summary)
+          PY
+
+      - name: Persist results
+        if: always()
+        run: |
+          git add state/final-690 generated/domain-check/final-690 generated/final 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Finalize 690 hostnames and build cleaned routing list"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-690-and-cleaned-list
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            final-690.log
+            state/final-690/
+            generated/domain-check/final-690/
+            generated/final/
+
+      - name: Fail if DNS classification failed
+        if: always()
+        run: |
+          code="${{ steps.dns.outputs.exit_code }}"
+          echo "final_690_exit_code=$code"
+          if [ -z "$code" ] || [ "$code" != "0" ]; then
+            exit 1
+          fi
