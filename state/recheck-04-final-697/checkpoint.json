@@ -1,5 +1,5 @@
 {
-  "checkpoint_number": 13,
+  "checkpoint_number": 14,
   "config": {
     "dns_hard_timeout": 45.0,
     "dns_query_concurrency": 6,
@@ -18,13 +18,13 @@
     "01_LIVE_WEB": 1,
     "02_DNS_ALIVE_WEB_DEAD": 0,
     "03_NXDOMAIN_DEAD": 14,
-    "04_STILL_UNCERTAIN": 635
+    "04_STILL_UNCERTAIN": 682
   },
   "input_count": 697,
   "input_sha256": "2921cf978b2011a0b33308572de967411f579b050b1779cc9cb148bec6261072",
-  "processed_count": 650,
-  "remaining_count": 47,
-  "status": "RUNNING",
-  "timestamp_utc": "2026-08-27T11:35:34Z",
+  "processed_count": 697,
+  "remaining_count": 0,
+  "status": "COMPLETE",
+  "timestamp_utc": "2026-08-27T11:36:36Z",
   "version": 1
 }

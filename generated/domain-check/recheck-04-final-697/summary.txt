@@ -1,0 +1,13 @@
+UNCERTAIN RECHECK COMPLETED
+===========================
+timestamp_utc=2026-08-27T11:36:36Z
+input_sha256=2921cf978b2011a0b33308572de967411f579b050b1779cc9cb148bec6261072
+input=697
+01_LIVE_WEB=1
+02_DNS_ALIVE_WEB_DEAD=0
+03_NXDOMAIN_DEAD=14
+04_STILL_UNCERTAIN=682
+class_total=697
+missing=0
+invalid_class=0
+duplicates=0
