@@ -1,0 +1,14 @@
+FINAL CLEANED LIST COMPLETED
+============================
+input=21989
+keep_known=15174
+confirmed_nxdomain_remove=6230
+unresolved_keep=585
+final_cleaned_count=15759
+final_690_alive=105
+final_690_confirmed_nxdomain=0
+final_690_inconsistent=0
+final_690_uncertain=585
+cleaned_sha256=1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6
+missing=0
+duplicates=0
