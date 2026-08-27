@@ -7,6 +7,7 @@ on:
       - build-ru-blocked-server-allow-20260826
     paths:
       - scripts/build_ru_blocked_cleaned_clients.py
+      - scripts/merge_runetfreedom_geosite.go
       - .github/workflows/build-ru-blocked-cleaned-clients.yml
 
 permissions:
@@ -19,6 +20,8 @@ env:
   OUTPUT_DIR: generated/clients/ru-blocked-cleaned
   EXPECTED_COUNT: "15759"
   EXPECTED_INPUT_SHA256: 1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6
+  RUNETFREEDOM_GEOSITE_URL: https://raw.githubusercontent.com/runetfreedom/russia-v2ray-rules-dat/release/geosite.dat
+  RUNETFREEDOM_SHA_URL: https://raw.githubusercontent.com/runetfreedom/russia-v2ray-rules-dat/release/geosite.dat.sha256sum
 
 jobs:
   build:
@@ -60,13 +63,38 @@ jobs:
             --output-dir "$OUTPUT_DIR" \
             --expected-count "$EXPECTED_COUNT"
 
+      - name: Download and verify Runet Freedom geosite.dat
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/runetfreedom
+          mkdir -p /tmp/runetfreedom
+          curl -fL --retry 4 --retry-delay 5 --connect-timeout 20 \
+            "$RUNETFREEDOM_GEOSITE_URL" -o /tmp/runetfreedom/geosite.dat
+          curl -fL --retry 4 --retry-delay 5 --connect-timeout 20 \
+            "$RUNETFREEDOM_SHA_URL" -o /tmp/runetfreedom/geosite.dat.sha256sum
+
+          upstream_expected="$(awk '{print $1}' /tmp/runetfreedom/geosite.dat.sha256sum | head -n1 | tr -d '\r')"
+          upstream_actual="$(sha256sum /tmp/runetfreedom/geosite.dat | awk '{print $1}')"
+          test "${#upstream_expected}" = "64"
+          test "$upstream_actual" = "$upstream_expected"
+
+          upstream_size="$(stat -c '%s' /tmp/runetfreedom/geosite.dat)"
+          test "$upstream_size" -gt 1000000
+          test "$upstream_size" -lt 100000000
+
+          echo "RUNETFREEDOM_SHA256=$upstream_actual" >> "$GITHUB_ENV"
+          echo "RUNETFREEDOM_SIZE_BYTES=$upstream_size" >> "$GITHUB_ENV"
+          echo "runetfreedom_sha256=$upstream_actual"
+          echo "runetfreedom_size_bytes=$upstream_size"
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.25.12"
           cache: false
 
-      - name: Build geosite.dat with official V2Fly generator
+      - name: Merge full Runet Freedom geosite with ru-blocked-cleaned
         shell: bash
         run: |
           set -euo pipefail
@@ -74,64 +102,19 @@ jobs:
           git clone --depth 1 https://github.com/v2fly/domain-list-community.git /tmp/domain-list-community
           cd /tmp/domain-list-community
           go mod download
-          go run ./ \
-            --datapath="$GITHUB_WORKSPACE/$OUTPUT_DIR/geosite-source" \
-            --outputname=geosite.dat \
-            --outputdir="$GITHUB_WORKSPACE/$OUTPUT_DIR" \
-            --exportlists=ru-blocked-cleaned
+          cp "$GITHUB_WORKSPACE/scripts/merge_runetfreedom_geosite.go" ./merge_runetfreedom_geosite.go
 
-      - name: Validate geosite.dat category and exact rule count
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat > /tmp/domain-list-community/validate_geosite_tmp.go <<'GO'
-          package main
+          go run ./merge_runetfreedom_geosite.go \
+            --base=/tmp/runetfreedom/geosite.dat \
+            --canonical="$GITHUB_WORKSPACE/$INPUT_FILE" \
+            --output="$GITHUB_WORKSPACE/$OUTPUT_DIR/geosite.dat" \
+            --category=RU-BLOCKED-CLEANED \
+            --expected-count="$EXPECTED_COUNT" \
+            | tee "$GITHUB_WORKSPACE/$OUTPUT_DIR/merge-validation.txt"
 
-          import (
-            "fmt"
-            "os"
-            "strings"
+          rm -f ./merge_runetfreedom_geosite.go
 
-            router "github.com/v2fly/v2ray-core/v5/app/router/routercommon"
-            "google.golang.org/protobuf/proto"
-          )
-
-          func main() {
-            if len(os.Args) != 3 {
-              panic("usage: validator geosite.dat expected-count")
-            }
-            var expected int
-            if _, err := fmt.Sscanf(os.Args[2], "%d", &expected); err != nil {
-              panic(err)
-            }
-            b, err := os.ReadFile(os.Args[1])
-            if err != nil { panic(err) }
-            var list router.GeoSiteList
-            if err := proto.Unmarshal(b, &list); err != nil { panic(err) }
-            if len(list.Entry) != 1 {
-              panic(fmt.Sprintf("expected exactly 1 geosite category, got %d", len(list.Entry)))
-            }
-            site := list.Entry[0]
-            if !strings.EqualFold(site.CountryCode, "ru-blocked-cleaned") {
-              panic(fmt.Sprintf("unexpected category: %q", site.CountryCode))
-            }
-            if len(site.Domain) != expected {
-              panic(fmt.Sprintf("expected %d domains, got %d", expected, len(site.Domain)))
-            }
-            for i, d := range site.Domain {
-              if d.Type != router.Domain_Full {
-                panic(fmt.Sprintf("entry %d is not FULL: %v", i, d.Type))
-              }
-            }
-            fmt.Printf("geosite_category=%s\n", site.CountryCode)
-            fmt.Printf("geosite_exact_full_count=%d\n", len(site.Domain))
-          }
-          GO
-          cd /tmp/domain-list-community
-          go run ./validate_geosite_tmp.go "$GITHUB_WORKSPACE/$OUTPUT_DIR/geosite.dat" "$EXPECTED_COUNT"
-          rm -f validate_geosite_tmp.go
-
-      - name: Cross-check exported plaintext and build manifest
+      - name: Cross-check text artifacts and build manifest
         shell: bash
         run: |
           set -euo pipefail
@@ -139,27 +122,49 @@ jobs:
           from pathlib import Path
           import hashlib
           import os
+          import re
 
           root = Path(os.environ['OUTPUT_DIR'])
           expected = int(os.environ['EXPECTED_COUNT'])
           source = Path(os.environ['INPUT_FILE'])
           shadow = root / 'ru-blocked-cleaned.list'
+          geo_source = root / 'geosite-source' / 'ru-blocked-cleaned'
           plain = root / 'ru-blocked-cleaned.txt'
           dat = root / 'geosite.dat'
-          geo_source = root / 'geosite-source' / 'ru-blocked-cleaned'
+          validation = root / 'merge-validation.txt'
 
           canonical = [x.strip() for x in source.read_text(encoding='utf-8').splitlines() if x.strip()]
           shadow_domains = [x.split(',', 1)[1] for x in shadow.read_text(encoding='utf-8').splitlines() if x]
+          source_lines = [x.strip() for x in geo_source.read_text(encoding='utf-8').splitlines() if x.strip()]
+          source_domains = [x[5:] for x in source_lines if x.startswith('full:')]
+
+          # Keep this human-readable geosite-source export reproducible too.
+          plain.write_text(geo_source.read_text(encoding='utf-8'), encoding='utf-8')
           plain_lines = [x.strip() for x in plain.read_text(encoding='utf-8').splitlines() if x.strip()]
           plain_domains = [x[5:] for x in plain_lines if x.startswith('full:')]
-          source_lines = [x.strip() for x in geo_source.read_text(encoding='utf-8').splitlines() if x.strip()]
 
           assert len(canonical) == expected
+          assert len(set(canonical)) == expected
           assert shadow_domains == canonical
-          assert len(plain_lines) == expected and len(plain_domains) == expected
+          assert source_domains == canonical
           assert plain_domains == canonical
-          assert len(source_lines) == expected and all(x.startswith('full:') for x in source_lines)
-          assert dat.stat().st_size > 0
+          assert dat.stat().st_size > int(os.environ['RUNETFREEDOM_SIZE_BYTES'])
+
+          validation_text = validation.read_text(encoding='utf-8')
+          def metric(name: str) -> int:
+              m = re.search(rf'^{re.escape(name)}=(\d+)$', validation_text, re.M)
+              assert m, f'missing metric {name}'
+              return int(m.group(1))
+
+          source_categories = metric('source_category_count')
+          removed_target = metric('source_existing_target_categories_removed')
+          preserved_categories = metric('preserved_upstream_category_count')
+          output_categories = metric('output_category_count')
+          target_count = metric('target_exact_full_count')
+
+          assert preserved_categories == source_categories - removed_target
+          assert output_categories == preserved_categories + 1
+          assert target_count == expected
 
           def sha(path: Path) -> str:
               return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -173,9 +178,17 @@ jobs:
                   'matching_semantics=exact_hostname',
                   'shadowrocket_rule_type=DOMAIN',
                   'happ_geosite_category=geosite:ru-blocked-cleaned',
+                  'happ_geosite_base=runetfreedom/russia-v2ray-rules-dat@release',
+                  f'runetfreedom_geosite_sha256={os.environ["RUNETFREEDOM_SHA256"]}',
+                  f'runetfreedom_geosite_size_bytes={os.environ["RUNETFREEDOM_SIZE_BYTES"]}',
+                  f'runetfreedom_source_category_count={source_categories}',
+                  f'runetfreedom_existing_target_removed={removed_target}',
+                  f'preserved_upstream_category_count={preserved_categories}',
+                  f'merged_output_category_count={output_categories}',
                   f'canonical_input_sha256={sha(source)}',
                   f'shadowrocket_list_sha256={sha(shadow)}',
                   f'geosite_dat_sha256={sha(dat)}',
+                  f'geosite_dat_size_bytes={dat.stat().st_size}',
                   f'geosite_plain_sha256={sha(plain)}',
                   '',
               ]),
@@ -192,6 +205,7 @@ jobs:
                   '',
                   'Happ:',
                   f'Geositeurl: {base}/geosite.dat',
+                  'The geosite.dat above contains the full Runet Freedom geosite plus our category.',
                   'DirectSites: geosite:ru-blocked-cleaned',
                   '',
               ]),
@@ -206,7 +220,7 @@ jobs:
           set -euo pipefail
           git add "$OUTPUT_DIR"
           if ! git diff --cached --quiet; then
-            git commit -m "Build ru-blocked-cleaned client artifacts"
+            git commit -m "Merge Runet Freedom geosite with ru-blocked-cleaned"
             git push origin HEAD:build-ru-blocked-server-allow-20260826
           fi
 
