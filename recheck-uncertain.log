@@ -1,0 +1,299 @@
+========================================================================
+STRICT RECHECK: 04_UNCERTAIN_RECHECK
+input=8189 resume=0 remaining=8189
+input_sha256=a581513b52da9d0cee53a4bfc0b4f6cd99e8608c954eac6ffe136b14241c70ce
+hostname_concurrency=12 dns_query_concurrency=18
+dns_timeout=4.0s dns_hard=22.0s http_total=12.0s
+[PROGRESS] [------------------------------]   0.61% 50/8189 | LIVE=15 WEB_DEAD=0 NXDOMAIN=29 STILL_UNCERTAIN=6 | rate=14.78 host/s active=12 last=3dclimat.ru
+[PROGRESS] [------------------------------]   1.22% 100/8189 | LIVE=37 WEB_DEAD=0 NXDOMAIN=55 STILL_UNCERTAIN=8 | rate=13.65 host/s active=12 last=500divan.ru
+[PROGRESS] [------------------------------]   1.83% 150/8189 | LIVE=68 WEB_DEAD=2 NXDOMAIN=68 STILL_UNCERTAIN=12 | rate=11.54 host/s active=12 last=78legion.ru
+[PROGRESS] [------------------------------]   2.44% 200/8189 | LIVE=95 WEB_DEAD=5 NXDOMAIN=84 STILL_UNCERTAIN=16 | rate=10.82 host/s active=12 last=actmart.ru
+[PROGRESS] [------------------------------]   3.05% 250/8189 | LIVE=122 WEB_DEAD=7 NXDOMAIN=104 STILL_UNCERTAIN=17 | rate=10.47 host/s active=12 last=agro-si.ru
+[build-ru-blocked-server-allow-20260826 3060f1b] Checkpoint uncertain recheck 250/8189
+ 2 files changed, 280 insertions(+)
+ create mode 100644 state/recheck-04/checkpoint.json
+ create mode 100644 state/recheck-04/results.partial.jsonl
+[CHECKPOINT] persisted 250/8189
+[PROGRESS] [#-----------------------------]   3.66% 300/8189 | LIVE=149 WEB_DEAD=12 NXDOMAIN=116 STILL_UNCERTAIN=23 | rate=9.42 host/s active=12 last=aitafilm.ru
+[PROGRESS] [#-----------------------------]   4.27% 350/8189 | LIVE=179 WEB_DEAD=15 NXDOMAIN=128 STILL_UNCERTAIN=28 | rate=8.94 host/s active=12 last=aladdin-electro.ru
+[PROGRESS] [#-----------------------------]   4.88% 400/8189 | LIVE=202 WEB_DEAD=17 NXDOMAIN=146 STILL_UNCERTAIN=35 | rate=8.63 host/s active=12 last=amdm.ru
+[PROGRESS] [#-----------------------------]   5.50% 450/8189 | LIVE=217 WEB_DEAD=19 NXDOMAIN=175 STILL_UNCERTAIN=39 | rate=8.89 host/s active=12 last=analiz-analizov.ru
+[PROGRESS] [#-----------------------------]   6.11% 500/8189 | LIVE=239 WEB_DEAD=20 NXDOMAIN=197 STILL_UNCERTAIN=44 | rate=8.65 host/s active=12 last=animeee.ru
+[build-ru-blocked-server-allow-20260826 1bf7692] Checkpoint uncertain recheck 500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 500/8189
+[PROGRESS] [##----------------------------]   6.72% 550/8189 | LIVE=261 WEB_DEAD=26 NXDOMAIN=216 STILL_UNCERTAIN=47 | rate=8.10 host/s active=12 last=april-trends.ru
+[PROGRESS] [##----------------------------]   7.33% 600/8189 | LIVE=284 WEB_DEAD=30 NXDOMAIN=235 STILL_UNCERTAIN=51 | rate=7.77 host/s active=12 last=artcombat.ru
+[PROGRESS] [##----------------------------]   7.85% 643/8189 | LIVE=305 WEB_DEAD=35 NXDOMAIN=249 STILL_UNCERTAIN=54 | rate=5.99 host/s active=12 last=as-terra.ru
+[PROGRESS] [##----------------------------]   7.94% 650/8189 | LIVE=310 WEB_DEAD=35 NXDOMAIN=250 STILL_UNCERTAIN=55 | rate=5.85 host/s active=12 last=asksvet.ru
+[PROGRESS] [##----------------------------]   8.45% 692/8189 | LIVE=330 WEB_DEAD=37 NXDOMAIN=268 STILL_UNCERTAIN=57 | rate=4.83 host/s active=12 last=atelieorenburg.ru
+[PROGRESS] [##----------------------------]   8.55% 700/8189 | LIVE=334 WEB_DEAD=37 NXDOMAIN=272 STILL_UNCERTAIN=57 | rate=4.71 host/s active=12 last=atom-amp21.ru
+[PROGRESS] [##----------------------------]   9.12% 747/8189 | LIVE=358 WEB_DEAD=43 NXDOMAIN=289 STILL_UNCERTAIN=57 | rate=4.17 host/s active=12 last=autolook-vlrd.ru
+[PROGRESS] [##----------------------------]   9.16% 750/8189 | LIVE=361 WEB_DEAD=43 NXDOMAIN=289 STILL_UNCERTAIN=57 | rate=4.15 host/s active=12 last=autolux-nsk.ru
+[build-ru-blocked-server-allow-20260826 13858c7] Checkpoint uncertain recheck 750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 750/8189
+[PROGRESS] [##----------------------------]   9.52% 780/8189 | LIVE=371 WEB_DEAD=44 NXDOMAIN=301 STILL_UNCERTAIN=64 | rate=3.70 host/s active=12 last=avrora-mebel72.ru
+[PROGRESS] [##----------------------------]   9.77% 800/8189 | LIVE=383 WEB_DEAD=44 NXDOMAIN=308 STILL_UNCERTAIN=65 | rate=3.57 host/s active=12 last=avtoyurist-rostov.ru
+[PROGRESS] [###---------------------------]  10.31% 844/8189 | LIVE=407 WEB_DEAD=45 NXDOMAIN=327 STILL_UNCERTAIN=65 | rate=3.31 host/s active=12 last=bagazhnik-box.ru
+[PROGRESS] [###---------------------------]  10.38% 850/8189 | LIVE=411 WEB_DEAD=45 NXDOMAIN=329 STILL_UNCERTAIN=65 | rate=3.28 host/s active=12 last=bafrus.ru
+[PROGRESS] [###---------------------------]  10.99% 900/8189 | LIVE=433 WEB_DEAD=45 NXDOMAIN=353 STILL_UNCERTAIN=69 | rate=3.34 host/s active=12 last=base-minecraft.ru
+[PROGRESS] [###---------------------------]  11.60% 950/8189 | LIVE=458 WEB_DEAD=45 NXDOMAIN=376 STILL_UNCERTAIN=71 | rate=3.47 host/s active=12 last=beef-mobile38-amp.ru
+[PROGRESS] [###---------------------------]  12.21% 1000/8189 | LIVE=487 WEB_DEAD=51 NXDOMAIN=389 STILL_UNCERTAIN=73 | rate=3.56 host/s active=12 last=bestgamemobile.ru
+[build-ru-blocked-server-allow-20260826 8c50836] Checkpoint uncertain recheck 1000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 1000/8189
+[PROGRESS] [###---------------------------]  12.82% 1050/8189 | LIVE=516 WEB_DEAD=53 NXDOMAIN=406 STILL_UNCERTAIN=75 | rate=3.65 host/s active=12 last=biletsamara.ru
+[PROGRESS] [####--------------------------]  13.43% 1100/8189 | LIVE=536 WEB_DEAD=58 NXDOMAIN=428 STILL_UNCERTAIN=78 | rate=3.72 host/s active=12 last=bookadom.ru
+[PROGRESS] [####--------------------------]  14.04% 1150/8189 | LIVE=554 WEB_DEAD=62 NXDOMAIN=454 STILL_UNCERTAIN=80 | rate=3.81 host/s active=12 last=bototype.ru
+[PROGRESS] [####--------------------------]  14.65% 1200/8189 | LIVE=578 WEB_DEAD=64 NXDOMAIN=473 STILL_UNCERTAIN=85 | rate=3.89 host/s active=12 last=bs-corp.ru
+[PROGRESS] [####--------------------------]  15.26% 1250/8189 | LIVE=603 WEB_DEAD=68 NXDOMAIN=492 STILL_UNCERTAIN=87 | rate=3.95 host/s active=12 last=buronaxodok.ru
+[build-ru-blocked-server-allow-20260826 9b45403] Checkpoint uncertain recheck 1250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 1250/8189
+[PROGRESS] [####--------------------------]  15.87% 1300/8189 | LIVE=625 WEB_DEAD=72 NXDOMAIN=510 STILL_UNCERTAIN=93 | rate=4.00 host/s active=12 last=carbontax.ru
+[PROGRESS] [####--------------------------]  16.49% 1350/8189 | LIVE=652 WEB_DEAD=74 NXDOMAIN=526 STILL_UNCERTAIN=98 | rate=4.06 host/s active=12 last=cevsao.ru
+[PROGRESS] [#####-------------------------]  17.10% 1400/8189 | LIVE=669 WEB_DEAD=81 NXDOMAIN=549 STILL_UNCERTAIN=101 | rate=4.11 host/s active=12 last=checkforyou.ru
+[PROGRESS] [#####-------------------------]  17.71% 1450/8189 | LIVE=690 WEB_DEAD=86 NXDOMAIN=572 STILL_UNCERTAIN=102 | rate=4.19 host/s active=12 last=chistoto.ru
+[PROGRESS] [#####-------------------------]  18.32% 1500/8189 | LIVE=714 WEB_DEAD=90 NXDOMAIN=592 STILL_UNCERTAIN=104 | rate=4.09 host/s active=12 last=clmedsprawka.ru
+[build-ru-blocked-server-allow-20260826 c0d49a2] Checkpoint uncertain recheck 1500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 1500/8189
+[PROGRESS] [#####-------------------------]  18.83% 1542/8189 | LIVE=735 WEB_DEAD=90 NXDOMAIN=611 STILL_UNCERTAIN=106 | rate=3.87 host/s active=12 last=collabroom.ru
+[PROGRESS] [#####-------------------------]  18.93% 1550/8189 | LIVE=739 WEB_DEAD=91 NXDOMAIN=614 STILL_UNCERTAIN=106 | rate=3.85 host/s active=12 last=com-xiaomi.ru
+[PROGRESS] [#####-------------------------]  19.40% 1589/8189 | LIVE=759 WEB_DEAD=94 NXDOMAIN=628 STILL_UNCERTAIN=108 | rate=3.68 host/s active=12 last=coronafake.ru
+[PROGRESS] [#####-------------------------]  19.54% 1600/8189 | LIVE=763 WEB_DEAD=95 NXDOMAIN=632 STILL_UNCERTAIN=110 | rate=3.65 host/s active=12 last=coverrosonance.ru
+[PROGRESS] [######------------------------]  20.04% 1641/8189 | LIVE=778 WEB_DEAD=96 NXDOMAIN=655 STILL_UNCERTAIN=112 | rate=3.50 host/s active=12 last=csobagaevka.ru
+[PROGRESS] [######------------------------]  20.15% 1650/8189 | LIVE=782 WEB_DEAD=96 NXDOMAIN=658 STILL_UNCERTAIN=114 | rate=3.46 host/s active=12 last=cto-vann.ru
+[PROGRESS] [######------------------------]  20.63% 1689/8189 | LIVE=800 WEB_DEAD=97 NXDOMAIN=674 STILL_UNCERTAIN=118 | rate=3.33 host/s active=12 last=datametr.su
+[PROGRESS] [######------------------------]  20.76% 1700/8189 | LIVE=804 WEB_DEAD=99 NXDOMAIN=677 STILL_UNCERTAIN=120 | rate=3.31 host/s active=12 last=dbmurom.ru
+[PROGRESS] [######------------------------]  21.37% 1750/8189 | LIVE=828 WEB_DEAD=99 NXDOMAIN=701 STILL_UNCERTAIN=122 | rate=3.28 host/s active=12 last=derevodoska.ru
+[build-ru-blocked-server-allow-20260826 7388204] Checkpoint uncertain recheck 1750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 1750/8189
+[PROGRESS] [######------------------------]  21.98% 1800/8189 | LIVE=852 WEB_DEAD=99 NXDOMAIN=723 STILL_UNCERTAIN=126 | rate=3.33 host/s active=12 last=detsad150vrn.ru
+[PROGRESS] [######------------------------]  22.59% 1850/8189 | LIVE=879 WEB_DEAD=100 NXDOMAIN=738 STILL_UNCERTAIN=133 | rate=3.38 host/s active=12 last=dikie-karty-2023.swezhak.su
+[PROGRESS] [######------------------------]  23.20% 1900/8189 | LIVE=906 WEB_DEAD=102 NXDOMAIN=755 STILL_UNCERTAIN=137 | rate=3.42 host/s active=12 last=documentikupits2.ru
+[PROGRESS] [#######-----------------------]  23.81% 1950/8189 | LIVE=932 WEB_DEAD=105 NXDOMAIN=771 STILL_UNCERTAIN=142 | rate=3.46 host/s active=12 last=domnamsk.ru
+[PROGRESS] [#######-----------------------]  24.42% 2000/8189 | LIVE=942 WEB_DEAD=107 NXDOMAIN=794 STILL_UNCERTAIN=157 | rate=3.51 host/s active=12 last=dsbch1.ru
+[build-ru-blocked-server-allow-20260826 2930141] Checkpoint uncertain recheck 2000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 2000/8189
+[PROGRESS] [#######-----------------------]  25.03% 2050/8189 | LIVE=962 WEB_DEAD=113 NXDOMAIN=813 STILL_UNCERTAIN=162 | rate=3.54 host/s active=12 last=dveri-alfador.ru
+[PROGRESS] [#######-----------------------]  25.64% 2100/8189 | LIVE=992 WEB_DEAD=113 NXDOMAIN=832 STILL_UNCERTAIN=163 | rate=3.58 host/s active=12 last=ecci63.ru
+[PROGRESS] [#######-----------------------]  26.25% 2150/8189 | LIVE=1009 WEB_DEAD=115 NXDOMAIN=857 STILL_UNCERTAIN=169 | rate=3.62 host/s active=12 last=elagin-estate.ru
+[PROGRESS] [########----------------------]  26.87% 2200/8189 | LIVE=1034 WEB_DEAD=116 NXDOMAIN=876 STILL_UNCERTAIN=174 | rate=3.64 host/s active=12 last=enflame-dn.ru
+[PROGRESS] [########----------------------]  27.48% 2250/8189 | LIVE=1058 WEB_DEAD=125 NXDOMAIN=888 STILL_UNCERTAIN=179 | rate=3.58 host/s active=12 last=en.slopapa.ru
+[build-ru-blocked-server-allow-20260826 86280e2] Checkpoint uncertain recheck 2250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 2250/8189
+[PROGRESS] [########----------------------]  28.09% 2300/8189 | LIVE=1082 WEB_DEAD=130 NXDOMAIN=905 STILL_UNCERTAIN=183 | rate=3.57 host/s active=12 last=expertcareercentre.ru
+[PROGRESS] [########----------------------]  28.62% 2344/8189 | LIVE=1105 WEB_DEAD=133 NXDOMAIN=921 STILL_UNCERTAIN=185 | rate=3.47 host/s active=12 last=fashionapart.ru
+[PROGRESS] [########----------------------]  28.70% 2350/8189 | LIVE=1108 WEB_DEAD=135 NXDOMAIN=922 STILL_UNCERTAIN=185 | rate=3.45 host/s active=12 last=fantomeld.ru
+[PROGRESS] [########----------------------]  29.17% 2389/8189 | LIVE=1127 WEB_DEAD=138 NXDOMAIN=936 STILL_UNCERTAIN=188 | rate=3.36 host/s active=12 last=forumsmile.ru
+[PROGRESS] [########----------------------]  29.50% 2416/8189 | LIVE=1130 WEB_DEAD=143 NXDOMAIN=939 STILL_UNCERTAIN=204 | rate=3.26 host/s active=12 last=gapoleten.ru
+[PROGRESS] [########----------------------]  29.92% 2450/8189 | LIVE=1148 WEB_DEAD=144 NXDOMAIN=950 STILL_UNCERTAIN=208 | rate=3.19 host/s active=12 last=gefest-elektro.ru
+[PROGRESS] [#########---------------------]  30.46% 2494/8189 | LIVE=1166 WEB_DEAD=148 NXDOMAIN=967 STILL_UNCERTAIN=213 | rate=3.13 host/s active=12 last=gidravlika-service.ru
+[PROGRESS] [#########---------------------]  30.53% 2500/8189 | LIVE=1171 WEB_DEAD=148 NXDOMAIN=968 STILL_UNCERTAIN=213 | rate=3.13 host/s active=12 last=gig-games.ru
+[build-ru-blocked-server-allow-20260826 f417621] Checkpoint uncertain recheck 2500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 2500/8189
+[PROGRESS] [#########---------------------]  31.14% 2550/8189 | LIVE=1201 WEB_DEAD=148 NXDOMAIN=987 STILL_UNCERTAIN=214 | rate=3.17 host/s active=12 last=gkuyanaoiac.ru
+[PROGRESS] [#########---------------------]  31.75% 2600/8189 | LIVE=1228 WEB_DEAD=149 NXDOMAIN=1006 STILL_UNCERTAIN=217 | rate=3.21 host/s active=12 last=goodcomix.feu.su
+[PROGRESS] [#########---------------------]  32.36% 2650/8189 | LIVE=1258 WEB_DEAD=152 NXDOMAIN=1022 STILL_UNCERTAIN=218 | rate=3.24 host/s active=12 last=gradus-247-moskva.ru
+[PROGRESS] [#########---------------------]  32.62% 2671/8189 | LIVE=1265 WEB_DEAD=164 NXDOMAIN=1023 STILL_UNCERTAIN=219 | rate=3.14 host/s active=12 last=gradus1-247-spb.ru
+[PROGRESS] [#########---------------------]  32.97% 2700/8189 | LIVE=1266 WEB_DEAD=177 NXDOMAIN=1033 STILL_UNCERTAIN=224 | rate=3.12 host/s active=12 last=gradus247-saratov.ru
+[PROGRESS] [##########--------------------]  33.58% 2750/8189 | LIVE=1289 WEB_DEAD=184 NXDOMAIN=1050 STILL_UNCERTAIN=227 | rate=3.15 host/s active=12 last=gvidi.ru
+[build-ru-blocked-server-allow-20260826 a4190aa] Checkpoint uncertain recheck 2750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 2750/8189
+[PROGRESS] [##########--------------------]  34.19% 2800/8189 | LIVE=1319 WEB_DEAD=185 NXDOMAIN=1067 STILL_UNCERTAIN=229 | rate=3.18 host/s active=12 last=happy-galla.ru
+[PROGRESS] [##########--------------------]  34.80% 2850/8189 | LIVE=1343 WEB_DEAD=188 NXDOMAIN=1085 STILL_UNCERTAIN=234 | rate=3.20 host/s active=12 last=hoholtrost.ru
+[PROGRESS] [##########--------------------]  35.41% 2900/8189 | LIVE=1366 WEB_DEAD=193 NXDOMAIN=1104 STILL_UNCERTAIN=237 | rate=3.23 host/s active=12 last=hoverbotnsk.ru
+[PROGRESS] [##########--------------------]  36.02% 2950/8189 | LIVE=1392 WEB_DEAD=196 NXDOMAIN=1122 STILL_UNCERTAIN=240 | rate=3.27 host/s active=12 last=i107.ru
+[PROGRESS] [##########--------------------]  36.63% 3000/8189 | LIVE=1418 WEB_DEAD=201 NXDOMAIN=1137 STILL_UNCERTAIN=244 | rate=3.29 host/s active=12 last=iloxs-beauty.ru
+[build-ru-blocked-server-allow-20260826 3838768] Checkpoint uncertain recheck 3000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 3000/8189
+[PROGRESS] [###########-------------------]  37.25% 3050/8189 | LIVE=1439 WEB_DEAD=209 NXDOMAIN=1155 STILL_UNCERTAIN=247 | rate=3.29 host/s active=12 last=infopechen.ru
+[PROGRESS] [###########-------------------]  37.86% 3100/8189 | LIVE=1465 WEB_DEAD=215 NXDOMAIN=1169 STILL_UNCERTAIN=251 | rate=3.28 host/s active=12 last=ionweb.ru
+[PROGRESS] [###########-------------------]  38.47% 3150/8189 | LIVE=1494 WEB_DEAD=218 NXDOMAIN=1187 STILL_UNCERTAIN=251 | rate=3.23 host/s active=12 last=istore-net.ru
+[PROGRESS] [###########-------------------]  39.00% 3194/8189 | LIVE=1515 WEB_DEAD=220 NXDOMAIN=1204 STILL_UNCERTAIN=255 | rate=3.17 host/s active=12 last=izsp.ru
+[PROGRESS] [###########-------------------]  39.08% 3200/8189 | LIVE=1518 WEB_DEAD=221 NXDOMAIN=1206 STILL_UNCERTAIN=255 | rate=3.17 host/s active=12 last=it.casi3x.ru
+[PROGRESS] [###########-------------------]  39.53% 3237/8189 | LIVE=1534 WEB_DEAD=221 NXDOMAIN=1221 STILL_UNCERTAIN=261 | rate=3.11 host/s active=12 last=johnniegreenpub.ru
+[PROGRESS] [###########-------------------]  39.69% 3250/8189 | LIVE=1542 WEB_DEAD=222 NXDOMAIN=1225 STILL_UNCERTAIN=261 | rate=3.10 host/s active=12 last=juristi-novosibirska.ru
+[build-ru-blocked-server-allow-20260826 4290314] Checkpoint uncertain recheck 3250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 3250/8189
+[PROGRESS] [############------------------]  40.30% 3300/8189 | LIVE=1569 WEB_DEAD=224 NXDOMAIN=1240 STILL_UNCERTAIN=267 | rate=3.09 host/s active=12 last=kamenrai.ru
+[PROGRESS] [############------------------]  40.91% 3350/8189 | LIVE=1593 WEB_DEAD=224 NXDOMAIN=1258 STILL_UNCERTAIN=275 | rate=3.12 host/s active=12 last=katkivparkah.ru
+[PROGRESS] [############------------------]  41.52% 3400/8189 | LIVE=1619 WEB_DEAD=226 NXDOMAIN=1277 STILL_UNCERTAIN=278 | rate=3.14 host/s active=12 last=kgu-s.ru
+[PROGRESS] [############------------------]  42.13% 3450/8189 | LIVE=1635 WEB_DEAD=231 NXDOMAIN=1300 STILL_UNCERTAIN=284 | rate=3.12 host/s active=12 last=klondike24.ru
+[PROGRESS] [############------------------]  42.74% 3500/8189 | LIVE=1659 WEB_DEAD=232 NXDOMAIN=1324 STILL_UNCERTAIN=285 | rate=3.10 host/s active=12 last=konkurs-mintrud.ru
+[build-ru-blocked-server-allow-20260826 a80d29c] Checkpoint uncertain recheck 3500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 3500/8189
+[PROGRESS] [#############-----------------]  43.35% 3550/8189 | LIVE=1683 WEB_DEAD=239 NXDOMAIN=1340 STILL_UNCERTAIN=288 | rate=3.12 host/s active=12 last=kscomfort.ru
+[PROGRESS] [#############-----------------]  43.96% 3600/8189 | LIVE=1709 WEB_DEAD=239 NXDOMAIN=1359 STILL_UNCERTAIN=293 | rate=3.14 host/s active=12 last=kupisport.ru
+[PROGRESS] [#############-----------------]  44.57% 3650/8189 | LIVE=1725 WEB_DEAD=246 NXDOMAIN=1382 STILL_UNCERTAIN=297 | rate=3.15 host/s active=12 last=kvartira-box.ru
+[PROGRESS] [#############-----------------]  45.18% 3700/8189 | LIVE=1754 WEB_DEAD=250 NXDOMAIN=1397 STILL_UNCERTAIN=299 | rate=3.15 host/s active=12 last=lakylike.ru
+[PROGRESS] [#############-----------------]  45.79% 3750/8189 | LIVE=1767 WEB_DEAD=260 NXDOMAIN=1420 STILL_UNCERTAIN=303 | rate=3.14 host/s active=12 last=ledoviy-konstructor.ru
+[build-ru-blocked-server-allow-20260826 73305bf] Checkpoint uncertain recheck 3750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 3750/8189
+[PROGRESS] [#############-----------------]  46.40% 3800/8189 | LIVE=1792 WEB_DEAD=265 NXDOMAIN=1439 STILL_UNCERTAIN=304 | rate=3.16 host/s active=12 last=lex-hts4.ru
+[PROGRESS] [##############----------------]  47.01% 3850/8189 | LIVE=1806 WEB_DEAD=266 NXDOMAIN=1474 STILL_UNCERTAIN=304 | rate=3.20 host/s active=12 last=libertyclimate.ru
+[PROGRESS] [##############----------------]  47.62% 3900/8189 | LIVE=1829 WEB_DEAD=272 NXDOMAIN=1492 STILL_UNCERTAIN=307 | rate=3.20 host/s active=12 last=lefutur39.ru
+[PROGRESS] [##############----------------]  47.98% 3929/8189 | LIVE=1841 WEB_DEAD=275 NXDOMAIN=1501 STILL_UNCERTAIN=312 | rate=3.14 host/s active=12 last=mafia-link.ru
+[PROGRESS] [##############----------------]  48.24% 3950/8189 | LIVE=1845 WEB_DEAD=284 NXDOMAIN=1507 STILL_UNCERTAIN=314 | rate=3.13 host/s active=12 last=malaohta.ru
+[PROGRESS] [##############----------------]  48.85% 4000/8189 | LIVE=1856 WEB_DEAD=287 NXDOMAIN=1541 STILL_UNCERTAIN=316 | rate=3.10 host/s active=12 last=martincaz2-prof.ru
+[build-ru-blocked-server-allow-20260826 c2c1980] Checkpoint uncertain recheck 4000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 4000/8189
+[PROGRESS] [##############----------------]  49.32% 4039/8189 | LIVE=1868 WEB_DEAD=290 NXDOMAIN=1561 STILL_UNCERTAIN=320 | rate=3.05 host/s active=12 last=mayalazarenskaya.ru
+[PROGRESS] [##############----------------]  49.46% 4050/8189 | LIVE=1872 WEB_DEAD=290 NXDOMAIN=1564 STILL_UNCERTAIN=324 | rate=3.05 host/s active=12 last=mdou06-smol.ru
+[PROGRESS] [###############---------------]  50.07% 4100/8189 | LIVE=1897 WEB_DEAD=291 NXDOMAIN=1584 STILL_UNCERTAIN=328 | rate=3.07 host/s active=12 last=mellstroy.su
+[PROGRESS] [###############---------------]  50.68% 4150/8189 | LIVE=1926 WEB_DEAD=291 NXDOMAIN=1601 STILL_UNCERTAIN=332 | rate=3.09 host/s active=12 last=mgmarket6at-vhod.ru
+[PROGRESS] [###############---------------]  51.29% 4200/8189 | LIVE=1949 WEB_DEAD=297 NXDOMAIN=1619 STILL_UNCERTAIN=335 | rate=3.10 host/s active=12 last=mind-fitness-federation.ru
+[PROGRESS] [###############---------------]  51.90% 4250/8189 | LIVE=1971 WEB_DEAD=300 NXDOMAIN=1639 STILL_UNCERTAIN=340 | rate=3.07 host/s active=12 last=mixrolik.ru
+[build-ru-blocked-server-allow-20260826 b9ea635] Checkpoint uncertain recheck 4250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 4250/8189
+[PROGRESS] [###############---------------]  52.51% 4300/8189 | LIVE=1991 WEB_DEAD=302 NXDOMAIN=1661 STILL_UNCERTAIN=346 | rate=3.07 host/s active=12 last=mosk-dlplomss.ru
+[PROGRESS] [###############---------------]  53.12% 4350/8189 | LIVE=2009 WEB_DEAD=304 NXDOMAIN=1686 STILL_UNCERTAIN=351 | rate=3.09 host/s active=12 last=motorossia.ru
+[PROGRESS] [################--------------]  53.73% 4400/8189 | LIVE=2030 WEB_DEAD=307 NXDOMAIN=1705 STILL_UNCERTAIN=358 | rate=3.10 host/s active=12 last=msi-spb-service.ru
+[PROGRESS] [################--------------]  54.34% 4450/8189 | LIVE=2056 WEB_DEAD=309 NXDOMAIN=1725 STILL_UNCERTAIN=360 | rate=3.11 host/s active=12 last=mvs-design.ru
+[PROGRESS] [################--------------]  54.95% 4500/8189 | LIVE=2080 WEB_DEAD=314 NXDOMAIN=1743 STILL_UNCERTAIN=363 | rate=3.10 host/s active=12 last=myamazfit.ru
+[build-ru-blocked-server-allow-20260826 969af02] Checkpoint uncertain recheck 4500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 4500/8189
+[PROGRESS] [################--------------]  55.56% 4550/8189 | LIVE=2099 WEB_DEAD=316 NXDOMAIN=1765 STILL_UNCERTAIN=370 | rate=3.11 host/s active=12 last=nataliabelugina.ru
+[PROGRESS] [################--------------]  56.17% 4600/8189 | LIVE=2122 WEB_DEAD=318 NXDOMAIN=1786 STILL_UNCERTAIN=374 | rate=3.13 host/s active=12 last=neozeo.ru
+[PROGRESS] [#################-------------]  56.78% 4650/8189 | LIVE=2160 WEB_DEAD=319 NXDOMAIN=1795 STILL_UNCERTAIN=376 | rate=3.15 host/s active=12 last=newretroluck.ru
+[PROGRESS] [#################-------------]  57.24% 4687/8189 | LIVE=2178 WEB_DEAD=321 NXDOMAIN=1808 STILL_UNCERTAIN=380 | rate=3.12 host/s active=12 last=nlprom.ru
+[PROGRESS] [#################-------------]  57.39% 4700/8189 | LIVE=2184 WEB_DEAD=323 NXDOMAIN=1812 STILL_UNCERTAIN=381 | rate=3.11 host/s active=12 last=nmomedic.ru
+[PROGRESS] [#################-------------]  57.97% 4747/8189 | LIVE=2207 WEB_DEAD=330 NXDOMAIN=1825 STILL_UNCERTAIN=385 | rate=3.08 host/s active=12 last=novobrick.ru
+[PROGRESS] [#################-------------]  58.00% 4750/8189 | LIVE=2209 WEB_DEAD=330 NXDOMAIN=1826 STILL_UNCERTAIN=385 | rate=3.08 host/s active=12 last=novogod-shop.ru
+[build-ru-blocked-server-allow-20260826 24960c5] Checkpoint uncertain recheck 4750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 4750/8189
+[PROGRESS] [#################-------------]  58.58% 4797/8189 | LIVE=2236 WEB_DEAD=331 NXDOMAIN=1840 STILL_UNCERTAIN=390 | rate=3.05 host/s active=12 last=nwmc.ru
+[PROGRESS] [#################-------------]  58.62% 4800/8189 | LIVE=2238 WEB_DEAD=331 NXDOMAIN=1841 STILL_UNCERTAIN=390 | rate=3.04 host/s active=12 last=nyamka-ufa.ru
+[PROGRESS] [#################-------------]  59.23% 4850/8189 | LIVE=2267 WEB_DEAD=333 NXDOMAIN=1855 STILL_UNCERTAIN=395 | rate=3.03 host/s active=12 last=officemart64.ru
+[PROGRESS] [#################-------------]  59.84% 4900/8189 | LIVE=2290 WEB_DEAD=336 NXDOMAIN=1875 STILL_UNCERTAIN=399 | rate=3.05 host/s active=12 last=okdokspb.ru
+[PROGRESS] [##################------------]  60.45% 4950/8189 | LIVE=2319 WEB_DEAD=337 NXDOMAIN=1893 STILL_UNCERTAIN=401 | rate=3.07 host/s active=12 last=onixgrupp.ru
+[PROGRESS] [##################------------]  61.06% 5000/8189 | LIVE=2349 WEB_DEAD=339 NXDOMAIN=1908 STILL_UNCERTAIN=404 | rate=3.07 host/s active=12 last=optsetka.ru
+[build-ru-blocked-server-allow-20260826 5c153f6] Checkpoint uncertain recheck 5000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 5000/8189
+[PROGRESS] [##################------------]  61.67% 5050/8189 | LIVE=2374 WEB_DEAD=339 NXDOMAIN=1927 STILL_UNCERTAIN=410 | rate=3.05 host/s active=12 last=otchetrf.ru
+[PROGRESS] [##################------------]  62.28% 5100/8189 | LIVE=2404 WEB_DEAD=340 NXDOMAIN=1944 STILL_UNCERTAIN=412 | rate=3.05 host/s active=12 last=panoramalive.ru
+[PROGRESS] [##################------------]  62.89% 5150/8189 | LIVE=2435 WEB_DEAD=341 NXDOMAIN=1957 STILL_UNCERTAIN=417 | rate=3.07 host/s active=12 last=pddknow.ru
+[PROGRESS] [###################-----------]  63.50% 5200/8189 | LIVE=2457 WEB_DEAD=343 NXDOMAIN=1978 STILL_UNCERTAIN=422 | rate=3.08 host/s active=12 last=pilkischool.ru
+[PROGRESS] [###################-----------]  64.11% 5250/8189 | LIVE=2486 WEB_DEAD=346 NXDOMAIN=1994 STILL_UNCERTAIN=424 | rate=3.09 host/s active=12 last=plame.ru
+[build-ru-blocked-server-allow-20260826 11d8fe7] Checkpoint uncertain recheck 5250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 5250/8189
+[PROGRESS] [###################-----------]  64.72% 5300/8189 | LIVE=2515 WEB_DEAD=353 NXDOMAIN=2005 STILL_UNCERTAIN=427 | rate=3.08 host/s active=12 last=podnyatie-urovnya-v-odinochku-animego.ru
+[PROGRESS] [###################-----------]  65.33% 5350/8189 | LIVE=2543 WEB_DEAD=354 NXDOMAIN=2024 STILL_UNCERTAIN=429 | rate=3.09 host/s active=12 last=polysad.ru
+[PROGRESS] [###################-----------]  65.94% 5400/8189 | LIVE=2559 WEB_DEAD=356 NXDOMAIN=2040 STILL_UNCERTAIN=445 | rate=3.10 host/s active=12 last=proworklife.ru
+[PROGRESS] [###################-----------]  66.41% 5438/8189 | LIVE=2572 WEB_DEAD=364 NXDOMAIN=2052 STILL_UNCERTAIN=450 | rate=3.07 host/s active=12 last=pultikspb.ru
+[PROGRESS] [###################-----------]  66.55% 5450/8189 | LIVE=2574 WEB_DEAD=365 NXDOMAIN=2058 STILL_UNCERTAIN=453 | rate=3.06 host/s active=12 last=pt.sloavalon.ru
+[PROGRESS] [####################----------]  67.16% 5500/8189 | LIVE=2599 WEB_DEAD=371 NXDOMAIN=2075 STILL_UNCERTAIN=455 | rate=3.04 host/s active=12 last=r-bike.ru
+[build-ru-blocked-server-allow-20260826 a449725] Checkpoint uncertain recheck 5500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 5500/8189
+[PROGRESS] [####################----------]  67.77% 5550/8189 | LIVE=2626 WEB_DEAD=374 NXDOMAIN=2094 STILL_UNCERTAIN=456 | rate=3.02 host/s active=12 last=radiowhynot.ru
+[PROGRESS] [####################----------]  68.38% 5600/8189 | LIVE=2656 WEB_DEAD=375 NXDOMAIN=2109 STILL_UNCERTAIN=460 | rate=3.00 host/s active=12 last=relay-start.ru
+[PROGRESS] [####################----------]  68.99% 5650/8189 | LIVE=2676 WEB_DEAD=376 NXDOMAIN=2120 STILL_UNCERTAIN=478 | rate=3.01 host/s active=12 last=rusmangal24.ru
+[PROGRESS] [####################----------]  69.53% 5694/8189 | LIVE=2686 WEB_DEAD=380 NXDOMAIN=2122 STILL_UNCERTAIN=506 | rate=2.99 host/s active=12 last=scl6-lipetsk.ru
+[PROGRESS] [####################----------]  69.61% 5700/8189 | LIVE=2690 WEB_DEAD=380 NXDOMAIN=2122 STILL_UNCERTAIN=508 | rate=2.98 host/s active=12 last=sdirekt.ru
+[PROGRESS] [#####################---------]  70.19% 5748/8189 | LIVE=2714 WEB_DEAD=382 NXDOMAIN=2127 STILL_UNCERTAIN=525 | rate=2.96 host/s active=12 last=skola-27.ru
+[PROGRESS] [#####################---------]  70.22% 5750/8189 | LIVE=2716 WEB_DEAD=382 NXDOMAIN=2127 STILL_UNCERTAIN=525 | rate=2.96 host/s active=12 last=skola1.ru
+[build-ru-blocked-server-allow-20260826 5aac755] Checkpoint uncertain recheck 5750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 5750/8189
+[PROGRESS] [#####################---------]  70.83% 5800/8189 | LIVE=2736 WEB_DEAD=386 NXDOMAIN=2141 STILL_UNCERTAIN=537 | rate=2.97 host/s active=12 last=spb-stm.ru
+[PROGRESS] [#####################---------]  71.44% 5850/8189 | LIVE=2759 WEB_DEAD=390 NXDOMAIN=2159 STILL_UNCERTAIN=542 | rate=2.98 host/s active=12 last=spokblog.ru
+[PROGRESS] [#####################---------]  72.05% 5900/8189 | LIVE=2784 WEB_DEAD=393 NXDOMAIN=2177 STILL_UNCERTAIN=546 | rate=2.98 host/s active=12 last=stapardent.ru
+[PROGRESS] [#####################---------]  72.66% 5950/8189 | LIVE=2805 WEB_DEAD=395 NXDOMAIN=2193 STILL_UNCERTAIN=557 | rate=2.98 host/s active=12 last=surovkafit.ru
+[PROGRESS] [#####################---------]  73.27% 6000/8189 | LIVE=2831 WEB_DEAD=396 NXDOMAIN=2213 STILL_UNCERTAIN=560 | rate=2.99 host/s active=12 last=szsm-kamensk.ru
+[build-ru-blocked-server-allow-20260826 97657f2] Checkpoint uncertain recheck 6000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 6000/8189
+[PROGRESS] [######################--------]  73.88% 6050/8189 | LIVE=2858 WEB_DEAD=399 NXDOMAIN=2228 STILL_UNCERTAIN=565 | rate=2.99 host/s active=12 last=taun23.ru
+[PROGRESS] [######################--------]  74.49% 6100/8189 | LIVE=2882 WEB_DEAD=403 NXDOMAIN=2246 STILL_UNCERTAIN=569 | rate=2.98 host/s active=12 last=techliceum.ru
+[PROGRESS] [######################--------]  75.10% 6150/8189 | LIVE=2908 WEB_DEAD=407 NXDOMAIN=2264 STILL_UNCERTAIN=571 | rate=2.96 host/s active=12 last=terra-school.ru
+[PROGRESS] [######################--------]  75.71% 6200/8189 | LIVE=2931 WEB_DEAD=409 NXDOMAIN=2287 STILL_UNCERTAIN=573 | rate=2.94 host/s active=12 last=tip-top-21.nv-school.ru
+[PROGRESS] [######################--------]  76.32% 6250/8189 | LIVE=2963 WEB_DEAD=412 NXDOMAIN=2299 STILL_UNCERTAIN=576 | rate=2.94 host/s active=12 last=to-school.ru
+[build-ru-blocked-server-allow-20260826 ee7e328] Checkpoint uncertain recheck 6250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 6250/8189
+[PROGRESS] [#######################-------]  76.93% 6300/8189 | LIVE=2993 WEB_DEAD=415 NXDOMAIN=2310 STILL_UNCERTAIN=582 | rate=2.94 host/s active=12 last=trcvr.ru
+[PROGRESS] [#######################-------]  77.54% 6350/8189 | LIVE=3012 WEB_DEAD=416 NXDOMAIN=2326 STILL_UNCERTAIN=596 | rate=2.95 host/s active=12 last=uganvet.ru
+[PROGRESS] [#######################-------]  78.09% 6395/8189 | LIVE=3035 WEB_DEAD=423 NXDOMAIN=2334 STILL_UNCERTAIN=603 | rate=2.93 host/s active=12 last=v2ray.su
+[PROGRESS] [#######################-------]  78.15% 6400/8189 | LIVE=3035 WEB_DEAD=427 NXDOMAIN=2334 STILL_UNCERTAIN=604 | rate=2.93 host/s active=12 last=v2raytun-client.ru
+[PROGRESS] [#######################-------]  78.76% 6450/8189 | LIVE=3053 WEB_DEAD=429 NXDOMAIN=2343 STILL_UNCERTAIN=625 | rate=2.92 host/s active=12 last=vr-style.ru
+[PROGRESS] [#######################-------]  79.37% 6500/8189 | LIVE=3075 WEB_DEAD=436 NXDOMAIN=2358 STILL_UNCERTAIN=631 | rate=2.91 host/s active=12 last=web.f2club.ru
+[build-ru-blocked-server-allow-20260826 1177e1a] Checkpoint uncertain recheck 6500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 6500/8189
+[PROGRESS] [#######################-------]  79.99% 6550/8189 | LIVE=3105 WEB_DEAD=438 NXDOMAIN=2375 STILL_UNCERTAIN=632 | rate=2.92 host/s active=12 last=women.devtra.ru
+[PROGRESS] [########################------]  80.60% 6600/8189 | LIVE=3137 WEB_DEAD=443 NXDOMAIN=2387 STILL_UNCERTAIN=633 | rate=2.93 host/s active=12 last=www.askornyakov.ru
+[PROGRESS] [########################------]  81.21% 6650/8189 | LIVE=3174 WEB_DEAD=446 NXDOMAIN=2397 STILL_UNCERTAIN=633 | rate=2.95 host/s active=12 last=www.digenforum.ru
+[PROGRESS] [########################------]  81.82% 6700/8189 | LIVE=3216 WEB_DEAD=446 NXDOMAIN=2400 STILL_UNCERTAIN=638 | rate=2.95 host/s active=12 last=www.lvb-holding.ru
+[PROGRESS] [########################------]  82.43% 6750/8189 | LIVE=3253 WEB_DEAD=449 NXDOMAIN=2407 STILL_UNCERTAIN=641 | rate=2.96 host/s active=12 last=www.multimenu.ru
+[build-ru-blocked-server-allow-20260826 a818f5e] Checkpoint uncertain recheck 6750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 6750/8189
+[PROGRESS] [########################------]  83.04% 6800/8189 | LIVE=3289 WEB_DEAD=455 NXDOMAIN=2415 STILL_UNCERTAIN=641 | rate=2.95 host/s active=12 last=www.russez.ru
+[PROGRESS] [#########################-----]  83.65% 6850/8189 | LIVE=3324 WEB_DEAD=457 NXDOMAIN=2427 STILL_UNCERTAIN=642 | rate=2.94 host/s active=12 last=www.udmrbs.ru
+[PROGRESS] [#########################-----]  84.26% 6900/8189 | LIVE=3361 WEB_DEAD=459 NXDOMAIN=2435 STILL_UNCERTAIN=645 | rate=2.92 host/s active=12 last=wwwq4.ru
+[PROGRESS] [#########################-----]  84.87% 6950/8189 | LIVE=3383 WEB_DEAD=460 NXDOMAIN=2460 STILL_UNCERTAIN=647 | rate=2.91 host/s active=12 last=xn-----clcmba9cdhcbgidilh4ae.xn--p1ai
+[PROGRESS] [#########################-----]  85.48% 7000/8189 | LIVE=3404 WEB_DEAD=460 NXDOMAIN=2488 STILL_UNCERTAIN=648 | rate=2.92 host/s active=12 last=xn----7sba7agpnbgra6h.xn--p1ai
+[build-ru-blocked-server-allow-20260826 b3210af] Checkpoint uncertain recheck 7000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 7000/8189
+[PROGRESS] [#########################-----]  86.09% 7050/8189 | LIVE=3429 WEB_DEAD=461 NXDOMAIN=2512 STILL_UNCERTAIN=648 | rate=2.93 host/s active=12 last=xn----7sbale3ebno.xn--p1ai
+[PROGRESS] [##########################----]  86.70% 7100/8189 | LIVE=3453 WEB_DEAD=463 NXDOMAIN=2535 STILL_UNCERTAIN=649 | rate=2.94 host/s active=12 last=xn----7sbbi9aebmgpc8a9n.xn--p1ai
+[PROGRESS] [##########################----]  87.31% 7150/8189 | LIVE=3480 WEB_DEAD=465 NXDOMAIN=2553 STILL_UNCERTAIN=652 | rate=2.93 host/s active=12 last=xn----7sbnqkqsqb3im.xn--p1ai
+[PROGRESS] [##########################----]  87.92% 7200/8189 | LIVE=3498 WEB_DEAD=467 NXDOMAIN=2581 STILL_UNCERTAIN=654 | rate=2.93 host/s active=12 last=xn----8sbb6ackra0aex2c6b.xn--p1ai
+[PROGRESS] [##########################----]  88.53% 7250/8189 | LIVE=3524 WEB_DEAD=467 NXDOMAIN=2604 STILL_UNCERTAIN=655 | rate=2.93 host/s active=12 last=xn----9sbigsnrrn9g.xn--p1ai
+[build-ru-blocked-server-allow-20260826 e4d5761] Checkpoint uncertain recheck 7250/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 7250/8189
+[PROGRESS] [##########################----]  89.14% 7300/8189 | LIVE=3551 WEB_DEAD=467 NXDOMAIN=2624 STILL_UNCERTAIN=658 | rate=2.94 host/s active=12 last=xn----ftbbpgokgfbbmbx7l.xn--p1ai
+[PROGRESS] [##########################----]  89.75% 7350/8189 | LIVE=3567 WEB_DEAD=470 NXDOMAIN=2653 STILL_UNCERTAIN=660 | rate=2.94 host/s active=12 last=xn---1-7kc3bfpcekho7e.xn--p1ai
+[PROGRESS] [###########################---]  90.37% 7400/8189 | LIVE=3599 WEB_DEAD=470 NXDOMAIN=2670 STILL_UNCERTAIN=661 | rate=2.95 host/s active=12 last=xn--100--y4da2aohw3h.xn--p1ai
+[PROGRESS] [###########################---]  90.98% 7450/8189 | LIVE=3631 WEB_DEAD=470 NXDOMAIN=2685 STILL_UNCERTAIN=664 | rate=2.96 host/s active=12 last=xn--21-6kcichhfdwaxf8a4b.xn--p1ai
+[PROGRESS] [###########################---]  91.59% 7500/8189 | LIVE=3653 WEB_DEAD=470 NXDOMAIN=2710 STILL_UNCERTAIN=667 | rate=2.97 host/s active=12 last=xn--6-7sbatz2av.xn--p1ai
+[build-ru-blocked-server-allow-20260826 cc3464f] Checkpoint uncertain recheck 7500/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 7500/8189
+[PROGRESS] [###########################---]  92.20% 7550/8189 | LIVE=3676 WEB_DEAD=472 NXDOMAIN=2731 STILL_UNCERTAIN=671 | rate=2.97 host/s active=12 last=xn--80aaahpbi4afvbodo9a.xn--p1ai
+[PROGRESS] [###########################---]  92.81% 7600/8189 | LIVE=3695 WEB_DEAD=478 NXDOMAIN=2754 STILL_UNCERTAIN=673 | rate=2.98 host/s active=12 last=xn--80aaefxpuwl.xn--p1ai
+[PROGRESS] [############################--]  93.42% 7650/8189 | LIVE=3722 WEB_DEAD=479 NXDOMAIN=2774 STILL_UNCERTAIN=675 | rate=2.97 host/s active=12 last=xn--80accnaag4dgkf0m.xn--p1ai
+[PROGRESS] [############################--]  94.03% 7700/8189 | LIVE=3748 WEB_DEAD=480 NXDOMAIN=2796 STILL_UNCERTAIN=676 | rate=2.96 host/s active=12 last=xn--80afoclggyd5duf.xn--p1ai
+[PROGRESS] [############################--]  94.64% 7750/8189 | LIVE=3772 WEB_DEAD=485 NXDOMAIN=2815 STILL_UNCERTAIN=678 | rate=2.95 host/s active=12 last=xn--80ajkjghex5k.xn--p1ai
+[build-ru-blocked-server-allow-20260826 89fd39d] Checkpoint uncertain recheck 7750/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 7750/8189
+[PROGRESS] [############################--]  95.25% 7800/8189 | LIVE=3789 WEB_DEAD=490 NXDOMAIN=2843 STILL_UNCERTAIN=678 | rate=2.94 host/s active=12 last=xn--99-6kca7ai1crj1c.xn--p1ai
+[PROGRESS] [############################--]  95.86% 7850/8189 | LIVE=3818 WEB_DEAD=493 NXDOMAIN=2859 STILL_UNCERTAIN=680 | rate=2.94 host/s active=12 last=xn--b1adz9a.xn--p1ai
+[PROGRESS] [############################--]  96.47% 7900/8189 | LIVE=3842 WEB_DEAD=497 NXDOMAIN=2881 STILL_UNCERTAIN=680 | rate=2.95 host/s active=12 last=xn--b1aq0ab.xn--p1ai
+[PROGRESS] [#############################-]  97.08% 7950/8189 | LIVE=3862 WEB_DEAD=501 NXDOMAIN=2904 STILL_UNCERTAIN=683 | rate=2.96 host/s active=12 last=xn--e1agflcgp4g.xn--p1ai
+[PROGRESS] [#############################-]  97.69% 8000/8189 | LIVE=3894 WEB_DEAD=504 NXDOMAIN=2919 STILL_UNCERTAIN=683 | rate=2.96 host/s active=12 last=yad-buys.ru
+[build-ru-blocked-server-allow-20260826 45ea0e7] Checkpoint uncertain recheck 8000/8189
+ 2 files changed, 258 insertions(+), 8 deletions(-)
+[CHECKPOINT] persisted 8000/8189
+[PROGRESS] [#############################-]  98.30% 8050/8189 | LIVE=3923 WEB_DEAD=509 NXDOMAIN=2933 STILL_UNCERTAIN=685 | rate=2.95 host/s active=12 last=zab-gto.ru
+[PROGRESS] [#############################-]  98.91% 8100/8189 | LIVE=3947 WEB_DEAD=513 NXDOMAIN=2949 STILL_UNCERTAIN=691 | rate=2.95 host/s active=12 last=zalogtomsk.ru
+[PROGRESS] [#############################-]  99.52% 8150/8189 | LIVE=3972 WEB_DEAD=515 NXDOMAIN=2970 STILL_UNCERTAIN=693 | rate=2.96 host/s active=12 last=znvstroi.ru
+[PROGRESS] [##############################] 100.00% 8189/8189 | LIVE=3988 WEB_DEAD=516 NXDOMAIN=2988 STILL_UNCERTAIN=697 | rate=2.96 host/s active=0 last=zosh.ru
+========================================================================
+UNCERTAIN RECHECK COMPLETED
+01_LIVE_WEB=3988
+02_DNS_ALIVE_WEB_DEAD=516
+03_NXDOMAIN_DEAD=2988
+04_STILL_UNCERTAIN=697
+TOTAL=8189
