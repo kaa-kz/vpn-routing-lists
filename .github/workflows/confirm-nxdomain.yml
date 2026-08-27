@@ -1,0 +1,129 @@
+name: Confirm NXDOMAIN candidates
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - scripts/confirm_nxdomain.py
+      - .github/workflows/confirm-nxdomain.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependency
+        run: |
+          python -m pip install --upgrade pip
+          pip install dnspython
+
+      - name: Build and validate NXDOMAIN input
+        run: |
+          set -euo pipefail
+          mkdir -p generated/domain-check/recheck-nxdomain
+          cat \
+            generated/domain-check/03_NXDOMAIN_DEAD.txt \
+            generated/domain-check/recheck-04/03_NXDOMAIN_DEAD.txt \
+            | sed '/^[[:space:]]*$/d' \
+            | sort -u \
+            > generated/domain-check/recheck-nxdomain/input_06224_NXDOMAIN.txt
+
+          python - <<'PY'
+          from pathlib import Path
+          a = [x.strip() for x in Path('generated/domain-check/03_NXDOMAIN_DEAD.txt').read_text(encoding='utf-8').splitlines() if x.strip()]
+          b = [x.strip() for x in Path('generated/domain-check/recheck-04/03_NXDOMAIN_DEAD.txt').read_text(encoding='utf-8').splitlines() if x.strip()]
+          merged = [x.strip() for x in Path('generated/domain-check/recheck-nxdomain/input_06224_NXDOMAIN.txt').read_text(encoding='utf-8').splitlines() if x.strip()]
+          assert len(a) == 3236, len(a)
+          assert len(b) == 2988, len(b)
+          assert len(a) + len(b) == 6224
+          assert len(merged) == 6224, len(merged)
+          assert len(merged) == len(set(merged))
+          assert set(a).isdisjoint(set(b)), 'NXDOMAIN source lists unexpectedly overlap'
+          print(f'first_pass_nxdomain={len(a)}')
+          print(f'recheck_04_nxdomain={len(b)}')
+          print(f'validated_merged_input={len(merged)}')
+          PY
+
+      - name: Static validation
+        run: |
+          python -m py_compile scripts/confirm_nxdomain.py
+
+      - name: Run strict NXDOMAIN confirmation
+        id: confirm
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/confirm_nxdomain.py \
+            --input generated/domain-check/recheck-nxdomain/input_06224_NXDOMAIN.txt \
+            --output-dir generated/domain-check/recheck-nxdomain \
+            --state-dir state/recheck-nxdomain \
+            --expected-count 6224 \
+            --concurrency 8 \
+            --dns-query-concurrency 12 \
+            --dns-timeout 4 \
+            --hostname-hard-timeout 90 \
+            --max-authoritative-ns 4 \
+            --progress-every 50 \
+            --heartbeat-seconds 30 \
+            --watchdog-seconds 180 \
+            --checkpoint-every 100 \
+            --checkpoint-seconds 180 \
+            --soft-limit-seconds 19200 \
+            --git-checkpoint \
+            2>&1 | tee nxdomain-confirm.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Persist final state and outputs
+        if: always()
+        run: |
+          git add state/recheck-nxdomain generated/domain-check/recheck-nxdomain 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist strict NXDOMAIN confirmation results"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nxdomain-confirm-diagnostics
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            nxdomain-confirm.log
+            state/recheck-nxdomain/
+            generated/domain-check/recheck-nxdomain/
+
+      - name: Fail if confirmation failed or paused
+        if: always()
+        run: |
+          code="${{ steps.confirm.outputs.exit_code }}"
+          echo "confirm_exit_code=$code"
+          if [ -z "$code" ] || [ "$code" != "0" ]; then
+            exit 1
+          fi
