@@ -1,0 +1,6 @@
+Shadowrocket:
+RULE-SET,https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/clients/ru-blocked-cleaned/ru-blocked-cleaned.list,DIRECT
+
+Happ:
+Geositeurl: https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/clients/ru-blocked-cleaned/geosite.dat
+DirectSites: geosite:ru-blocked-cleaned
