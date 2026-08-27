@@ -1,0 +1,109 @@
+name: Confirm final 14 NXDOMAIN candidates
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/confirm-nxdomain-final-14.yml
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependency
+        run: |
+          python -m pip install --upgrade pip
+          pip install dnspython
+
+      - name: Validate input
+        run: |
+          python -m py_compile scripts/confirm_nxdomain.py
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('generated/domain-check/recheck-04-final-697/03_NXDOMAIN_DEAD.txt')
+          items = [x.strip() for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
+          assert len(items) == 14, len(items)
+          assert len(items) == len(set(items))
+          print('validated_final_nxdomain_input=14')
+          PY
+
+      - name: Run strict authoritative confirmation
+        id: confirm
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/confirm_nxdomain.py \
+            --input generated/domain-check/recheck-04-final-697/03_NXDOMAIN_DEAD.txt \
+            --output-dir generated/domain-check/recheck-nxdomain-final-14 \
+            --state-dir state/recheck-nxdomain-final-14 \
+            --expected-count 14 \
+            --concurrency 2 \
+            --dns-query-concurrency 4 \
+            --dns-timeout 8 \
+            --hostname-hard-timeout 180 \
+            --max-authoritative-ns 8 \
+            --progress-every 1 \
+            --heartbeat-seconds 20 \
+            --watchdog-seconds 240 \
+            --checkpoint-every 1 \
+            --checkpoint-seconds 30 \
+            --soft-limit-seconds 4800 \
+            --git-checkpoint \
+            2>&1 | tee confirm-nxdomain-final-14.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Persist results
+        if: always()
+        run: |
+          git add state/recheck-nxdomain-final-14 generated/domain-check/recheck-nxdomain-final-14 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist final 14 NXDOMAIN confirmation results"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-14-nxdomain-diagnostics
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            confirm-nxdomain-final-14.log
+            state/recheck-nxdomain-final-14/
+            generated/domain-check/recheck-nxdomain-final-14/
+
+      - name: Fail if confirmation failed or paused
+        if: always()
+        run: |
+          code="${{ steps.confirm.outputs.exit_code }}"
+          echo "final_14_confirm_exit_code=$code"
+          if [ -z "$code" ] || [ "$code" != "0" ]; then
+            exit 1
+          fi
