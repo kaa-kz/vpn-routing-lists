@@ -1,0 +1,30 @@
+{
+  "checkpoint_number": 1,
+  "config": {
+    "dns_hard_timeout": 22.0,
+    "dns_query_concurrency": 18,
+    "dns_servers": {
+      "cloudflare": "1.1.1.1",
+      "google": "8.8.8.8",
+      "quad9": "9.9.9.9"
+    },
+    "dns_timeout": 4.0,
+    "hostname_concurrency": 12,
+    "hostname_hard_timeout": 50.0,
+    "http_connect_timeout": 4.0,
+    "http_total_timeout": 12.0
+  },
+  "counts": {
+    "01_LIVE_WEB": 122,
+    "02_DNS_ALIVE_WEB_DEAD": 7,
+    "03_NXDOMAIN_DEAD": 104,
+    "04_STILL_UNCERTAIN": 17
+  },
+  "input_count": 8189,
+  "input_sha256": "a581513b52da9d0cee53a4bfc0b4f6cd99e8608c954eac6ffe136b14241c70ce",
+  "processed_count": 250,
+  "remaining_count": 7939,
+  "status": "RUNNING",
+  "timestamp_utc": "2026-08-27T08:12:20Z",
+  "version": 1
+}
