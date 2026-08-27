@@ -3,4 +3,5 @@ RULE-SET,https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blo
 
 Happ:
 Geositeurl: https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/clients/ru-blocked-cleaned/geosite.dat
+The geosite.dat above contains the full Runet Freedom geosite plus our category.
 DirectSites: geosite:ru-blocked-cleaned

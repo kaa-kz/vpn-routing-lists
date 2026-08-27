@@ -1,0 +1,7 @@
+source_category_count=1543
+source_existing_target_categories_removed=0
+preserved_upstream_category_count=1543
+output_category_count=1544
+target_category=RU-BLOCKED-CLEANED
+target_exact_full_count=15759
+output_size_bytes=74031883
