@@ -1,0 +1,17 @@
+# Suffix profile for ru-blocked-cleaned filtering.
+# One DNS suffix per line; matching is on label boundaries only.
+# This file is intentionally editable for future expansion.
+ru
+xn--p1ai
+su
+moscow
+xn--80adxhks
+tatar
+xn--p1acf
+xn--d1acj3b
+xn--80asehdb
+xn--80aswg
+xn--c1avg
+yandex
+ru.com
+ru.net
