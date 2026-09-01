@@ -6,6 +6,8 @@ on:
       - build-ru-blocked-server-allow-20260826
     paths:
       - scripts/ru_blocked_orchestrator.py
+      - scripts/build_ru_blocked_cleaned_clients.py
+      - scripts/merge_runetfreedom_geosite.go
       - config/ru-blocked-suffixes.txt
       - .github/workflows/monthly-ru-blocked-orchestrator.yml
       - .github/workflows/ru-blocked-orchestrator-smoke.yml
@@ -15,9 +17,9 @@ permissions:
   contents: read
 
 jobs:
-  stage1-fast-smoke:
+  two-stage-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,8 +29,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.12"
+          cache: false
+
       - name: Compile orchestrator
-        run: python -m py_compile scripts/ru_blocked_orchestrator.py
+        run: python -m py_compile scripts/ru_blocked_orchestrator.py scripts/build_ru_blocked_cleaned_clients.py
 
       - name: Verify frozen baselines
         shell: bash
@@ -50,7 +57,7 @@ jobs:
             --nxdomain-mode fast \
             --suffix-file config/ru-blocked-suffixes.txt
 
-      - name: Validate smoke outputs
+      - name: Validate Stage 1 outputs
         shell: bash
         run: |
           set -euo pipefail
@@ -64,15 +71,58 @@ jobs:
           run = Path('runs') / os.environ['SMOKE_RUN_ID']
           state = json.loads((run/'state.json').read_text())
           manifest = json.loads((run/'manifest.json').read_text())
+          comparison = json.loads((run/'05_comparison/summary.json').read_text())
           assert state['status'] == 'STAGE1_COMPLETE', state
           assert manifest['mode'] == 'FAST', manifest
-          assert manifest['filtered_count'] >= manifest['cleaned_count'] > 0, manifest
-          assert len(manifest['suffixes']) >= 14, manifest
+          assert manifest['filtered_count'] == 21989, manifest
+          assert manifest['cleaned_count'] == 15759, manifest
+          assert manifest['cleaned_sha256'] == '1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6', manifest
+          assert comparison['added'] == 0 and comparison['removed'] == 0, comparison
           print(json.dumps({
               'run_id': manifest['run_id'],
               'filtered_count': manifest['filtered_count'],
               'cleaned_count': manifest['cleaned_count'],
               'cleaned_sha256': manifest['cleaned_sha256'],
+              'added_vs_manual': comparison['added'],
+              'removed_vs_manual': comparison['removed'],
+          }, indent=2))
+          PY
+
+      - name: Run Stage 2 without publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/ru_blocked_orchestrator.py stage2 --run-id "$SMOKE_RUN_ID"
+
+      - name: Validate Stage 2 outputs and no publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="runs/$SMOKE_RUN_ID/06_clients"
+          test -s "$out/ru-blocked-cleaned.list"
+          test -s "$out/geosite.dat"
+          test -s "$out/manifest.json"
+          test "$(wc -l < "$out/ru-blocked-cleaned.list" | tr -d ' ')" = "15759"
+          test "$(stat -c '%s' "$out/geosite.dat")" -gt 70000000
+          git diff --exit-code -- generated/clients/ru-blocked-cleaned
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          run = Path('runs') / os.environ['SMOKE_RUN_ID']
+          state = json.loads((run/'state.json').read_text())
+          manifest = json.loads((run/'06_clients/manifest.json').read_text())
+          rules = (run/'06_clients/ru-blocked-cleaned.list').read_text().splitlines()
+          assert state['status'] == 'STAGE2_COMPLETE', state
+          assert manifest['hostname_count'] == 15759, manifest
+          assert manifest['happ_category'] == 'geosite:ru-blocked-cleaned', manifest
+          assert manifest['shadowrocket'].endswith('/ru-blocked-cleaned.list,PROXY'), manifest
+          assert len(rules) == 15759 and all(x.startswith('DOMAIN,') for x in rules), 'bad Shadowrocket list'
+          print(json.dumps({
+              'hostname_count': manifest['hostname_count'],
+              'happ_category': manifest['happ_category'],
+              'shadowrocket_rule': manifest['shadowrocket'],
+              'geosite_sha256': manifest['geosite_sha256'],
+              'geosite_bytes': (run/'06_clients/geosite.dat').stat().st_size,
           }, indent=2))
           PY
 
