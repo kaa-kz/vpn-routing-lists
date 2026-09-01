@@ -1,0 +1,86 @@
+name: ru-blocked orchestrator smoke
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - scripts/ru_blocked_orchestrator.py
+      - config/ru-blocked-suffixes.txt
+      - .github/workflows/monthly-ru-blocked-orchestrator.yml
+      - .github/workflows/ru-blocked-orchestrator-smoke.yml
+      - baselines/manual-2026-08-27/**
+
+permissions:
+  contents: read
+
+jobs:
+  stage1-fast-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile orchestrator
+        run: python -m py_compile scripts/ru_blocked_orchestrator.py
+
+      - name: Verify frozen baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(grep -cv '^[[:space:]]*$' baselines/manual-2026-08-27/ru-blocked-cleaned-15759.txt)" = "15759"
+          test "$(grep -cv '^[[:space:]]*$' baselines/manual-2026-08-27/confirmed-nxdomain-6230.txt)" = "6230"
+          test "$(git hash-object baselines/manual-2026-08-27/ru-blocked-cleaned-15759.txt)" = "9844ca804ca003b111b72e38d7724d81ab766f49"
+          test "$(git hash-object baselines/manual-2026-08-27/confirmed-nxdomain-6230.txt)" = "52ddc1ef0f419679d5cbd23563b04769925a1dc2"
+
+      - name: Run real Stage 1 FAST without publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id="smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "SMOKE_RUN_ID=$run_id" >> "$GITHUB_ENV"
+          python scripts/ru_blocked_orchestrator.py stage1 \
+            --run-id "$run_id" \
+            --nxdomain-mode fast \
+            --suffix-file config/ru-blocked-suffixes.txt
+
+      - name: Validate smoke outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s "runs/$SMOKE_RUN_ID/01_source/ru-blocked.txt"
+          test -s "runs/$SMOKE_RUN_ID/02_filtered/ru-blocked-filtered.txt"
+          test -s "runs/$SMOKE_RUN_ID/04_final/ru-blocked-cleaned.txt"
+          test -s "runs/$SMOKE_RUN_ID/manifest.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          run = Path('runs') / os.environ['SMOKE_RUN_ID']
+          state = json.loads((run/'state.json').read_text())
+          manifest = json.loads((run/'manifest.json').read_text())
+          assert state['status'] == 'STAGE1_COMPLETE', state
+          assert manifest['mode'] == 'FAST', manifest
+          assert manifest['filtered_count'] >= manifest['cleaned_count'] > 0, manifest
+          assert len(manifest['suffixes']) >= 14, manifest
+          print(json.dumps({
+              'run_id': manifest['run_id'],
+              'filtered_count': manifest['filtered_count'],
+              'cleaned_count': manifest['cleaned_count'],
+              'cleaned_sha256': manifest['cleaned_sha256'],
+          }, indent=2))
+          PY
+
+      - name: Upload smoke diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ru-blocked-smoke-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: runs/smoke-${{ github.run_id }}-${{ github.run_attempt }}/
