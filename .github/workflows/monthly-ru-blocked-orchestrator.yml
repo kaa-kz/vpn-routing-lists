@@ -1,0 +1,207 @@
+name: Monthly ru-blocked orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Stage to run"
+        required: true
+        type: choice
+        default: stage1
+        options:
+          - stage1
+          - stage2
+      nxdomain_mode:
+        description: "Stage 1 NXDOMAIN mode"
+        required: true
+        type: choice
+        default: fast
+        options:
+          - fast
+          - full
+      run_id:
+        description: "Existing RUN_ID for RESUME/Stage 2; blank = create Stage 1 RUN_ID or use latest Stage 1 for Stage 2"
+        required: false
+        type: string
+      suffix_file:
+        description: "Suffix profile path"
+        required: true
+        type: string
+        default: config/ru-blocked-suffixes.txt
+      resume:
+        description: "Resume the same RUN_ID from completed checkpoints"
+        required: true
+        type: boolean
+        default: false
+      update_nxdomain_db:
+        description: "FULL Stage 1 only: promote confirmed NXDOMAIN result to current FAST database"
+        required: true
+        type: boolean
+        default: false
+      publish_clients:
+        description: "Stage 2 only: replace stable Happ/Shadowrocket artifacts after successful build"
+        required: true
+        type: boolean
+        default: false
+      debug:
+        description: "Verbose workflow diagnostics"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  BRANCH_NAME: build-ru-blocked-server-allow-20260826
+  RU_BLOCKED_BRANCH: build-ru-blocked-server-allow-20260826
+  ORCHESTRATOR_GIT_CHECKPOINT: "1"
+  PYTHONUNBUFFERED: "1"
+  PYTHONFAULTHANDLER: "1"
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DNS/web dependencies
+        run: python -m pip install --disable-pip-version-check aiohttp dnspython
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.12"
+          cache: false
+
+      - name: Validate implementation and frozen baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/ru_blocked_orchestrator.py scripts/check_hostnames.py scripts/recheck_uncertain.py scripts/confirm_nxdomain.py scripts/build_ru_blocked_cleaned_clients.py
+          test "$(grep -cv '^[[:space:]]*$' baselines/manual-2026-08-27/ru-blocked-cleaned-15759.txt)" = "15759"
+          test "$(grep -cv '^[[:space:]]*$' baselines/manual-2026-08-27/confirmed-nxdomain-6230.txt)" = "6230"
+          test "$(git hash-object baselines/manual-2026-08-27/ru-blocked-cleaned-15759.txt)" = "9844ca804ca003b111b72e38d7724d81ab766f49"
+          test "$(git hash-object baselines/manual-2026-08-27/confirmed-nxdomain-6230.txt)" = "52ddc1ef0f419679d5cbd23563b04769925a1dc2"
+          echo "Frozen manual baselines: OK"
+
+      - name: Resolve RUN_ID and command
+        id: resolve
+        shell: bash
+        env:
+          INPUT_STAGE: ${{ inputs.stage }}
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          if [[ "$INPUT_STAGE" == "stage1" ]]; then
+            if [[ -n "$INPUT_RUN_ID" ]]; then
+              run_id="$INPUT_RUN_ID"
+            else
+              run_id="$(date -u +'%Y-%m-%d_%H%M%SZ')"
+            fi
+          else
+            if [[ -n "$INPUT_RUN_ID" ]]; then
+              run_id="$INPUT_RUN_ID"
+            elif [[ -s generated/automation/latest-stage1-run.txt ]]; then
+              run_id="$(head -n1 generated/automation/latest-stage1-run.txt | tr -d '\r\n')"
+            else
+              echo "Stage 2 needs run_id or generated/automation/latest-stage1-run.txt" >&2
+              exit 2
+            fi
+          fi
+          [[ "$run_id" =~ ^[A-Za-z0-9._:-]+$ ]] || { echo "Unsafe RUN_ID: $run_id" >&2; exit 2; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "RUN_ID=$run_id" >> "$GITHUB_ENV"
+          echo "Resolved RUN_ID=$run_id"
+
+      - name: Run orchestrator
+        id: execute
+        shell: bash
+        env:
+          INPUT_STAGE: ${{ inputs.stage }}
+          INPUT_MODE: ${{ inputs.nxdomain_mode }}
+          INPUT_SUFFIX: ${{ inputs.suffix_file }}
+          INPUT_RESUME: ${{ inputs.resume }}
+          INPUT_UPDATE_NX: ${{ inputs.update_nxdomain_db }}
+          INPUT_PUBLISH: ${{ inputs.publish_clients }}
+          INPUT_DEBUG: ${{ inputs.debug }}
+        run: |
+          set +e
+          if [[ "$INPUT_DEBUG" == "true" ]]; then set -x; fi
+          args=(python scripts/ru_blocked_orchestrator.py "$INPUT_STAGE" --run-id "$RUN_ID")
+          if [[ "$INPUT_STAGE" == "stage1" ]]; then
+            args+=(--nxdomain-mode "$INPUT_MODE" --suffix-file "$INPUT_SUFFIX")
+            [[ "$INPUT_UPDATE_NX" == "true" ]] && args+=(--update-nxdomain-db)
+          else
+            [[ "$INPUT_PUBLISH" == "true" ]] && args+=(--publish)
+          fi
+          [[ "$INPUT_RESUME" == "true" ]] && args+=(--resume)
+          "${args[@]}"
+          rc=$?
+          echo "ORCHESTRATOR_RC=$rc" >> "$GITHUB_ENV"
+          echo "orchestrator_rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Debug snapshot
+        if: ${{ always() && inputs.debug }}
+        shell: bash
+        run: |
+          echo "--- git status ---"
+          git status --short || true
+          echo "--- run files ---"
+          find "runs/$RUN_ID" -maxdepth 4 -type f -printf '%p %s bytes\n' 2>/dev/null | sort || true
+          echo "--- state.json ---"
+          cat "runs/$RUN_ID/state.json" 2>/dev/null || true
+          echo "--- manifest.json ---"
+          cat "runs/$RUN_ID/manifest.json" 2>/dev/null || true
+
+      - name: Persist run state and generated artifacts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add "runs/$RUN_ID" generated/automation config/ru-blocked-suffixes.txt || true
+          if [[ "${{ inputs.stage }}" == "stage2" && "${{ inputs.publish_clients }}" == "true" ]]; then
+            git add generated/clients/ru-blocked-cleaned || true
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Orchestrator ${RUN_ID}: ${{ inputs.stage }}"
+            git push origin HEAD:build-ru-blocked-server-allow-20260826
+          fi
+
+      - name: Upload run diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ru-blocked-${{ steps.resolve.outputs.run_id }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            runs/${{ steps.resolve.outputs.run_id }}/
+            generated/automation/latest-stage1-run.txt
+
+      - name: Fail after state persistence
+        if: always()
+        shell: bash
+        run: |
+          rc="${ORCHESTRATOR_RC:-1}"
+          if [[ "$rc" != "0" ]]; then
+            echo "Orchestrator failed with rc=$rc. State/logs were persisted for RESUME." >&2
+            exit "$rc"
+          fi
+          echo "Orchestrator completed successfully."
