@@ -78,3 +78,11 @@ Routing semantics:
 - `ru-blocked-cleaned` → **PROXY**
 - generic Russian / `category-ru` / bank rules → **DIRECT**
 - in Shadowrocket the `ru-blocked-cleaned` RULE-SET must remain above generic `.ru → DIRECT` because rules are first-match.
+
+## GitHub Actions activation
+
+All implementation currently lives only in the technical branch `build-ru-blocked-server-allow-20260826`; `main` is intentionally untouched.
+
+GitHub requires a `workflow_dispatch` workflow file to exist on the repository default branch before the **Run workflow** button can trigger it. Therefore the technical implementation is complete and tested, but interactive Actions launch is intentionally not activated yet.
+
+Activation requires a small launcher workflow on `main` whose job checks out `build-ru-blocked-server-allow-20260826` and runs this orchestrator. Do not add that launcher without explicit approval to modify `main`.
