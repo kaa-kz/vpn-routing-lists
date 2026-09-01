@@ -6,6 +6,9 @@ on:
       - build-ru-blocked-server-allow-20260826
     paths:
       - scripts/ru_blocked_orchestrator.py
+      - scripts/check_hostnames.py
+      - scripts/recheck_uncertain.py
+      - scripts/confirm_nxdomain.py
       - scripts/build_ru_blocked_cleaned_clients.py
       - scripts/merge_runetfreedom_geosite.go
       - config/ru-blocked-suffixes.txt
@@ -17,9 +20,9 @@ permissions:
   contents: read
 
 jobs:
-  two-stage-smoke:
+  smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,8 +37,20 @@ jobs:
           go-version: "1.25.12"
           cache: false
 
-      - name: Compile orchestrator
-        run: python -m py_compile scripts/ru_blocked_orchestrator.py scripts/build_ru_blocked_cleaned_clients.py
+      - name: Install DNS/web dependencies
+        run: python -m pip install --disable-pip-version-check aiohttp dnspython
+
+      - name: Compile implementation and validate workflow YAML
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/ru_blocked_orchestrator.py \
+            scripts/check_hostnames.py \
+            scripts/recheck_uncertain.py \
+            scripts/confirm_nxdomain.py \
+            scripts/build_ru_blocked_cleaned_clients.py
+          ruby -e "require 'yaml'; YAML.load_file('.github/workflows/monthly-ru-blocked-orchestrator.yml'); puts 'monthly workflow YAML: OK'"
 
       - name: Verify frozen baselines
         shell: bash
@@ -50,25 +65,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          run_id="smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          echo "SMOKE_RUN_ID=$run_id" >> "$GITHUB_ENV"
+          run_id="smoke-fast-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "FAST_RUN_ID=$run_id" >> "$GITHUB_ENV"
           python scripts/ru_blocked_orchestrator.py stage1 \
             --run-id "$run_id" \
             --nxdomain-mode fast \
             --suffix-file config/ru-blocked-suffixes.txt
 
-      - name: Validate Stage 1 outputs
+      - name: Validate Stage 1 FAST outputs
         shell: bash
         run: |
           set -euo pipefail
-          test -s "runs/$SMOKE_RUN_ID/01_source/ru-blocked.txt"
-          test -s "runs/$SMOKE_RUN_ID/02_filtered/ru-blocked-filtered.txt"
-          test -s "runs/$SMOKE_RUN_ID/04_final/ru-blocked-cleaned.txt"
-          test -s "runs/$SMOKE_RUN_ID/manifest.json"
           python - <<'PY'
           import json, os
           from pathlib import Path
-          run = Path('runs') / os.environ['SMOKE_RUN_ID']
+          run = Path('runs') / os.environ['FAST_RUN_ID']
           state = json.loads((run/'state.json').read_text())
           manifest = json.loads((run/'manifest.json').read_text())
           comparison = json.loads((run/'05_comparison/summary.json').read_text())
@@ -92,13 +103,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/ru_blocked_orchestrator.py stage2 --run-id "$SMOKE_RUN_ID"
+          python scripts/ru_blocked_orchestrator.py stage2 --run-id "$FAST_RUN_ID"
 
       - name: Validate Stage 2 outputs and no publication
         shell: bash
         run: |
           set -euo pipefail
-          out="runs/$SMOKE_RUN_ID/06_clients"
+          out="runs/$FAST_RUN_ID/06_clients"
           test -s "$out/ru-blocked-cleaned.list"
           test -s "$out/geosite.dat"
           test -s "$out/manifest.json"
@@ -108,7 +119,7 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
-          run = Path('runs') / os.environ['SMOKE_RUN_ID']
+          run = Path('runs') / os.environ['FAST_RUN_ID']
           state = json.loads((run/'state.json').read_text())
           manifest = json.loads((run/'06_clients/manifest.json').read_text())
           rules = (run/'06_clients/ru-blocked-cleaned.list').read_text().splitlines()
@@ -126,6 +137,46 @@ jobs:
           }, indent=2))
           PY
 
+      - name: Run tiny Stage 1 FULL without NXDOMAIN DB promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'ru.net\n' > /tmp/full-smoke-suffixes.txt
+          run_id="smoke-full-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "FULL_RUN_ID=$run_id" >> "$GITHUB_ENV"
+          python scripts/ru_blocked_orchestrator.py stage1 \
+            --run-id "$run_id" \
+            --nxdomain-mode full \
+            --suffix-file /tmp/full-smoke-suffixes.txt
+
+      - name: Validate tiny FULL outputs and current NXDOMAIN DB unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object generated/automation/nxdomain/confirmed-current.txt)" = "52ddc1ef0f419679d5cbd23563b04769925a1dc2"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          run = Path('runs') / os.environ['FULL_RUN_ID']
+          state = json.loads((run/'state.json').read_text())
+          manifest = json.loads((run/'manifest.json').read_text())
+          summary = json.loads((run/'04_final/summary.json').read_text())
+          filtered = (run/'02_filtered/ru-blocked-filtered.txt').read_text().splitlines()
+          assert state['status'] == 'STAGE1_COMPLETE', state
+          assert manifest['mode'] == 'FULL', manifest
+          assert len(filtered) == 5, filtered
+          assert summary['input'] == 5, summary
+          assert summary['cleaned'] + summary['confirmed_nxdomain'] == 5, summary
+          assert not manifest.get('update_nxdomain_db', False)
+          print(json.dumps({
+              'run_id': manifest['run_id'],
+              'filtered_count': len(filtered),
+              'confirmed_nxdomain': summary['confirmed_nxdomain'],
+              'unresolved_keep': summary['unresolved_keep'],
+              'cleaned_count': summary['cleaned'],
+          }, indent=2))
+          PY
+
       - name: Upload smoke diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -133,4 +184,6 @@ jobs:
           name: ru-blocked-smoke-${{ github.run_id }}
           retention-days: 14
           if-no-files-found: warn
-          path: runs/smoke-${{ github.run_id }}-${{ github.run_attempt }}/
+          path: |
+            runs/smoke-fast-${{ github.run_id }}-${{ github.run_attempt }}/
+            runs/smoke-full-${{ github.run_id }}-${{ github.run_attempt }}/
