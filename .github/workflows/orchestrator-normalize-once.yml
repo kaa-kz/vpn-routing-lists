@@ -1,0 +1,44 @@
+name: one-time orchestrator deterministic ordering patch
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/orchestrator-normalize-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - name: Patch exact line
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/ru_blocked_orchestrator.py')
+          s = p.read_text(encoding='utf-8')
+          old = 'selected=uniq(selected); write(out,selected)'
+          new = 'selected=sorted(uniq(selected)); write(out,selected)'
+          if s.count(old) != 1:
+              raise SystemExit(f'expected exactly one patch target, got {s.count(old)}')
+          p.write_text(s.replace(old, new), encoding='utf-8')
+          PY
+          python -m py_compile scripts/ru_blocked_orchestrator.py
+      - name: Commit patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/ru_blocked_orchestrator.py
+          git commit -m "Make orchestrator output ordering deterministic"
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
