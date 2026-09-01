@@ -89,7 +89,7 @@ def filter_source(src,out,sufs):
         total+=1; host=val.strip().rstrip(".")
         for s in ss:
             if host==s or host.endswith("."+s): selected.append(host); counts[s]+=1; break
-    selected=uniq(selected); write(out,selected)
+    selected=sorted(uniq(selected)); write(out,selected)
     jwrite(out.parent/"filter-report.json",{"source_sha256":sha(src),"domain_lines":total,"selected":len(selected),"suffixes":sufs,"suffix_counts":dict(counts)})
 
 def compare_manual(run,candidate):
