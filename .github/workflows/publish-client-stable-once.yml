@@ -1,0 +1,53 @@
+name: Publish stable client files once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/publish-client-stable-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+
+      - name: Build exact tested client files
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="publish-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --run-id "$RUN_ID"
+          OUT="runs/client-bundles/$RUN_ID/output"
+          test "$(sha256sum "$OUT/geosite.dat" | awk '{print $1}')" = "0a03ae881e0d42328befc8006cb23477bbb9d240e9da82b0294b716889094efd"
+          test "$(sha256sum "$OUT/shadowrocket-routing.conf" | awk '{print $1}')" = "48b130c2bd468b23c9c67edea8279ca1586403c8fdee57eb45cc7b5656fcfc5c"
+          cp "$OUT/geosite.dat" /tmp/geosite.dat
+          cp "$OUT/shadowrocket-routing.conf" /tmp/shadowrocket.conf
+
+      - name: Publish only two stable files to client branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan client-publish
+          git rm -rf .
+          cp /tmp/geosite.dat ./geosite.dat
+          cp /tmp/shadowrocket.conf ./shadowrocket.conf
+          git add geosite.dat shadowrocket.conf
+          git commit -m 'Publish tested client routing files'
+          git push --force origin HEAD:client
