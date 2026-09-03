@@ -1,0 +1,44 @@
+name: Fix Shadowrocket geosite attributes once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/fix-shadowrocket-geosite-attributes-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - name: Remove whole-category attribute rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/build_client_bundle.go')
+          s=p.read_text()
+          old='''    if len(d.Attribute) != 0 { failf("Shadowrocket conversion cannot preserve geosite attributes for %s", d.Value) }\n'''
+          if old not in s:
+              raise SystemExit('attribute guard not found')
+          p.write_text(s.replace(old,'',1))
+          PY
+          grep -q 'func convertDomain' scripts/build_client_bundle.go
+      - name: Commit patch and remove one-time workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/build_client_bundle.go
+          git rm .github/workflows/fix-shadowrocket-geosite-attributes-once.yml
+          git commit -m 'Preserve whole-category domains regardless of geosite attributes'
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
