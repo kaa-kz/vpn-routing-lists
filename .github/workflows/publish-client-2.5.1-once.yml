@@ -1,0 +1,81 @@
+name: Publish client profiles 2-5-1 once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/publish-client-2.5.1-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+
+      - name: Build exact tested release
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="publish-2-5-1-${GITHUB_RUN_ID}"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --server-version 2.5.1 --run-id "$RUN_ID"
+          OUT="runs/client-bundles/$RUN_ID/output"
+          mkdir -p /tmp/client-release
+          python scripts/build_full_client_profiles.py \
+            --version-name 2-5-1 \
+            --managed-shadowrocket "$OUT/shadowrocket-routing.conf" \
+            --server-block-dir canonical/server-block/versions/2.5.1 \
+            --shadow-output /tmp/client-release/shadowrocket.conf \
+            --happ-output /tmp/client-release/happ.txt \
+            --manifest-output /tmp/client-release/profile-manifest.json \
+            --timestamp 1788432000
+          cp "$OUT/geosite.dat" /tmp/client-release/geosite.dat
+
+          echo '0a03ae881e0d42328befc8006cb23477bbb9d240e9da82b0294b716889094efd  /tmp/client-release/geosite.dat' | sha256sum -c -
+          echo '83a850235f6bc07d9d6d5308b933debbd92bea38d006d355aadebf3e784a43df  /tmp/client-release/shadowrocket.conf' | sha256sum -c -
+          echo 'ba08b4d431ff81c3995ec9a502f18d13172ef42c83b8f0bcada5add5808f465d  /tmp/client-release/happ.txt' | sha256sum -c -
+
+          python - <<'PY'
+          import base64, json
+          from pathlib import Path
+          uri=Path('/tmp/client-release/happ.txt').read_text().strip()
+          h=json.loads(base64.b64decode(uri.split('happ://routing/add/',1)[1]))
+          assert h['Name']=='2-5-1'
+          assert h['Geositeurl']=='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/client/geosite.dat'
+          assert h['RouteOrder']=='block-proxy-direct'
+          s=Path('/tmp/client-release/shadowrocket.conf').read_text()
+          assert s.startswith('# Shadowrocket: 2-5-1\n# Canonical client policy version: 2-5-1\n')
+          assert 'denylist release 2.4.1' not in s.lower()
+          assert 'sub-kek/shadowrocket-lists' not in s
+          assert s.index('DOMAIN,003.su,PROXY') < s.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert 'FINAL,PROXY' in s
+          PY
+
+      - name: Publish exactly three stable client files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan client-release
+          git rm -rf . >/dev/null 2>&1 || true
+          cp /tmp/client-release/geosite.dat geosite.dat
+          cp /tmp/client-release/shadowrocket.conf shadowrocket.conf
+          cp /tmp/client-release/happ.txt happ.txt
+          git add geosite.dat shadowrocket.conf happ.txt
+          test "$(git ls-files | wc -l | tr -d ' ')" = "3"
+          git commit -m 'Publish client profiles 2-5-1'
+          git push --force origin HEAD:client
