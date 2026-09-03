@@ -28,23 +28,63 @@ def rule_policy(line: str) -> str | None:
     return None
 
 
-def load_managed_rules(path: Path) -> tuple[list[str], list[str]]:
-    proxy: list[str] = []
-    direct: list[str] = []
+def rule_key(line: str) -> tuple[str, str]:
+    parts = [p.strip() for p in line.split(",")]
+    if len(parts) < 3:
+        fail(f"unsupported managed rule: {line!r}")
+    return parts[0].upper(), parts[1].lower()
+
+
+def load_managed_rules(path: Path) -> tuple[list[str], list[str], dict]:
+    proxy_raw: list[str] = []
+    direct_raw: list[str] = []
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         policy = rule_policy(line)
         if policy == "PROXY":
-            proxy.append(line)
+            proxy_raw.append(line)
         elif policy == "DIRECT":
-            direct.append(line)
-    if not proxy or not direct:
+            direct_raw.append(line)
+
+    if not proxy_raw or not direct_raw:
         fail("managed Shadowrocket rules must contain both PROXY and DIRECT rules")
-    if len(proxy) != len(set(proxy)):
-        fail("duplicate managed PROXY rules")
-    if len(direct) != len(set(direct)):
-        fail("duplicate managed DIRECT rules")
-    return proxy, direct
+
+    proxy: list[str] = []
+    proxy_seen: set[tuple[str, str]] = set()
+    proxy_duplicates = 0
+    for line in proxy_raw:
+        key = rule_key(line)
+        if key in proxy_seen:
+            proxy_duplicates += 1
+            continue
+        proxy_seen.add(key)
+        proxy.append(line)
+
+    direct: list[str] = []
+    direct_seen: set[tuple[str, str]] = set()
+    direct_duplicates = 0
+    direct_overridden_by_proxy = 0
+    for line in direct_raw:
+        key = rule_key(line)
+        if key in proxy_seen:
+            direct_overridden_by_proxy += 1
+            continue
+        if key in direct_seen:
+            direct_duplicates += 1
+            continue
+        direct_seen.add(key)
+        direct.append(line)
+
+    stats = {
+        "proxy_raw": len(proxy_raw),
+        "proxy_unique": len(proxy),
+        "proxy_duplicates_removed": proxy_duplicates,
+        "direct_raw": len(direct_raw),
+        "direct_unique": len(direct),
+        "direct_duplicates_removed": direct_duplicates,
+        "direct_rules_removed_due_to_proxy_override": direct_overridden_by_proxy,
+    }
+    return proxy, direct, stats
 
 
 def load_server_ipv4(server_dir: Path) -> tuple[str, list[str]]:
@@ -71,13 +111,13 @@ def build_shadowrocket(template_path: Path, managed_path: Path, version_name: st
         if token not in template:
             fail(f"Shadowrocket template token missing: {token}")
 
-    proxy, direct = load_managed_rules(managed_path)
+    proxy, direct, dedupe = load_managed_rules(managed_path)
     proxy_block = "# Managed canonical PROXY rules — " + version_name + "\n" + "\n".join(proxy)
     direct_block = "# Managed canonical DIRECT rules — " + version_name + "\n" + "\n".join(direct)
     text = template.replace("__VERSION__", version_name)
     text = text.replace("__MANAGED_PROXY_RULES__", proxy_block)
     text = text.replace("__MANAGED_DIRECT_RULES__", direct_block)
-    if "__" in text:
+    if "__MANAGED_" in text or "__VERSION__" in text:
         fail("unresolved Shadowrocket template token")
 
     proxy_anchor = "DOMAIN,003.su,PROXY"
@@ -88,7 +128,7 @@ def build_shadowrocket(template_path: Path, managed_path: Path, version_name: st
         fail("Shadowrocket first-match invariant violated: ru-blocked-cleaned must precede .ru DIRECT")
     if "denylist release 2.4.1" in text.lower():
         fail("stale 2.4.1 marker remains in Shadowrocket profile")
-    if not text.rstrip().splitlines()[-4:].count("FINAL,PROXY") and "FINAL,PROXY" not in text:
+    if "FINAL,PROXY" not in text:
         fail("Shadowrocket FINAL,PROXY missing")
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -96,6 +136,7 @@ def build_shadowrocket(template_path: Path, managed_path: Path, version_name: st
     return {
         "proxy_managed_rules": len(proxy),
         "direct_managed_rules": len(direct),
+        "dedupe": dedupe,
         "sha256": sha256(output),
         "bytes": output.stat().st_size,
     }
@@ -141,7 +182,6 @@ def build_happ(template_path: Path, server_dir: Path, version_name: str, output:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(uri, encoding="utf-8", newline="\n")
 
-    # Round-trip validation.
     encoded = output.read_text(encoding="utf-8").strip().split("happ://routing/add/", 1)[1]
     check = json.loads(base64.b64decode(encoded).decode("utf-8"))
     if check["Name"] != version_name or check["Geositeurl"] != obj["Geositeurl"]:
@@ -174,11 +214,7 @@ def main() -> int:
     timestamp = a.timestamp or int(time.time())
     shadow = build_shadowrocket(Path(a.shadow_template), Path(a.managed_shadowrocket), a.version_name, Path(a.shadow_output))
     happ = build_happ(Path(a.happ_template), Path(a.server_block_dir), a.version_name, Path(a.happ_output), timestamp)
-    manifest = {
-        "version": a.version_name,
-        "shadowrocket": shadow,
-        "happ": happ,
-    }
+    manifest = {"version": a.version_name, "shadowrocket": shadow, "happ": happ}
     out = Path(a.manifest_output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
