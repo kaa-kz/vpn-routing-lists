@@ -1,10 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
+  "ordering": "PROXY before DIRECT for Shadowrocket first-match semantics",
   "categories": [
-    {"name": "category-bank-ru", "policy": "DIRECT"},
-    {"name": "category-ru", "policy": "DIRECT"},
     {"name": "meta", "policy": "PROXY"},
     {"name": "telegram", "policy": "PROXY"},
-    {"name": "youtube", "policy": "PROXY"}
+    {"name": "youtube", "policy": "PROXY"},
+    {"name": "category-bank-ru", "policy": "DIRECT"},
+    {"name": "category-ru", "policy": "DIRECT"}
   ]
 }
