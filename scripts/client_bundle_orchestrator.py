@@ -19,6 +19,7 @@ RU_CANONICAL = ROOT / "generated/final/ru-blocked-server-allow.cleaned.txt"
 RU_ORCHESTRATOR = ROOT / "scripts/ru_blocked_orchestrator.py"
 POLICY_DEFAULT = ROOT / "config/client-category-policy.json"
 GO_BUILDER = ROOT / "scripts/build_client_bundle.go"
+FULL_PROFILE_BUILDER = ROOT / "scripts/build_full_client_profiles.py"
 RUNET_GEOSITE_URL = "https://raw.githubusercontent.com/runetfreedom/russia-v2ray-rules-dat/release/geosite.dat"
 RUNET_SHA_URL = RUNET_GEOSITE_URL + ".sha256sum"
 
@@ -121,8 +122,8 @@ def get_runet_geosite(run: Path, supplied: str | None) -> Path:
 def run_go_builder(run: Path, runet: Path, ru: Path, server_dir: Path, policy: Path) -> tuple[Path, Path, Path]:
     out = run / "output"
     out.mkdir(parents=True, exist_ok=True)
-    happ = out / "geosite.dat"
-    sr = out / "shadowrocket-routing.conf"
+    geosite = out / "geosite.dat"
+    managed_sr = out / "shadowrocket-routing.conf"
     manifest = out / "manifest.json"
     module_dir = run / "work/go"
     module_dir.mkdir(parents=True, exist_ok=True)
@@ -140,21 +141,44 @@ def run_go_builder(run: Path, runet: Path, ru: Path, server_dir: Path, policy: P
         "--ru-cleaned", str(ru),
         "--server-block-dir", str(server_dir),
         "--policy", str(policy),
-        "--happ-output", str(happ),
-        "--shadowrocket-output", str(sr),
+        "--happ-output", str(geosite),
+        "--shadowrocket-output", str(managed_sr),
         "--manifest-output", str(manifest),
     ]
-    print("[BUILD] Happ + Shadowrocket")
+    print("[BUILD] managed geosite + Shadowrocket rules")
     subprocess.run(cmd, cwd=module_dir, check=True)
-    return happ, sr, manifest
+    return geosite, managed_sr, manifest
 
 
-def publish(happ: Path, sr: Path, manifest: Path) -> Path:
+def run_full_profile_builder(run: Path, managed_sr: Path, server_dir: Path, server_version: str) -> tuple[Path, Path, Path]:
+    out = run / "output"
+    happ_profile = out / "happ.txt"
+    shadow_profile = out / "shadowrocket.conf"
+    profile_manifest = out / "profile-manifest.json"
+    version_name = server_version.replace(".", "-")
+    cmd = [
+        sys.executable,
+        str(FULL_PROFILE_BUILDER),
+        "--version-name", version_name,
+        "--managed-shadowrocket", str(managed_sr),
+        "--server-block-dir", str(server_dir),
+        "--shadow-output", str(shadow_profile),
+        "--happ-output", str(happ_profile),
+        "--manifest-output", str(profile_manifest),
+    ]
+    print(f"[BUILD] full client profiles {version_name}")
+    subprocess.run(cmd, cwd=ROOT, check=True)
+    return happ_profile, shadow_profile, profile_manifest
+
+
+def publish(geosite: Path, happ_profile: Path, shadow_profile: Path, manifest: Path, profile_manifest: Path) -> Path:
     dst = ROOT / "generated/clients/client-bundle"
     dst.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(happ, dst / "geosite.dat")
-    shutil.copy2(sr, dst / "shadowrocket-routing.conf")
+    shutil.copy2(geosite, dst / "geosite.dat")
+    shutil.copy2(happ_profile, dst / "happ.txt")
+    shutil.copy2(shadow_profile, dst / "shadowrocket.conf")
     shutil.copy2(manifest, dst / "manifest.json")
+    shutil.copy2(profile_manifest, dst / "profile-manifest.json")
     return dst
 
 
@@ -188,21 +212,24 @@ def main() -> int:
     print(f"  Runet Freedom geosite: {sha256(runet)}")
     print(f"  policy: {policy.relative_to(ROOT) if policy.is_relative_to(ROOT) else policy}")
 
-    happ, sr, manifest = run_go_builder(run, runet, ru, server_dir, policy)
+    geosite, managed_sr, manifest = run_go_builder(run, runet, ru, server_dir, policy)
     m = json.loads(manifest.read_text(encoding="utf-8"))
     if m["server_block_version"] != server_version:
         fail("output server version mismatch")
     if m["ru_blocked_cleaned"] != len(lines(ru)):
         fail("output ru-blocked-cleaned count mismatch")
 
+    happ_profile, shadow_profile, profile_manifest = run_full_profile_builder(run, managed_sr, server_dir, server_version)
+
     if a.publish:
-        dst = publish(happ, sr, manifest)
+        dst = publish(geosite, happ_profile, shadow_profile, manifest, profile_manifest)
         print(f"PUBLISHED={dst.relative_to(ROOT)}")
 
     print("\nГОТОВО")
-    print(f"HAPP={happ.relative_to(ROOT)}")
-    print(f"SHADOWROCKET={sr.relative_to(ROOT)}")
-    print(f"MANIFEST={manifest.relative_to(ROOT)}")
+    print(f"GEOSITE={geosite.relative_to(ROOT)}")
+    print(f"HAPP={happ_profile.relative_to(ROOT)}")
+    print(f"SHADOWROCKET={shadow_profile.relative_to(ROOT)}")
+    print(f"MANIFEST={profile_manifest.relative_to(ROOT)}")
     return 0
 
 
