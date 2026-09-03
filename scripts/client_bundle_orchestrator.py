@@ -132,9 +132,10 @@ def run_go_builder(run: Path, runet: Path, ru: Path, server_dir: Path, policy: P
         "  google.golang.org/protobuf v1.36.12\n)\n",
         encoding="utf-8",
     )
-    subprocess.run(["go", "mod", "download"], cwd=module_dir, check=True)
+    shutil.copy2(GO_BUILDER, module_dir / "main.go")
+    subprocess.run(["go", "mod", "tidy"], cwd=module_dir, check=True)
     cmd = [
-        "go", "run", str(GO_BUILDER),
+        "go", "run", ".",
         "--runet-geosite", str(runet),
         "--ru-cleaned", str(ru),
         "--server-block-dir", str(server_dir),
