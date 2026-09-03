@@ -1,6 +1,6 @@
 name: Client bundle smoke
 
-# smoke revision 4: whole-category geosite attributes preserved as domains
+# smoke revision 5: validate managed bundle plus full HAPP/Shadowrocket profiles
 on:
   push:
     branches:
@@ -9,7 +9,10 @@ on:
       - '.github/workflows/client-bundle-smoke.yml'
       - 'scripts/build_client_bundle.go'
       - 'scripts/client_bundle_orchestrator.py'
+      - 'scripts/build_full_client_profiles.py'
       - 'config/client-category-policy.json'
+      - 'config/happ-base-template.json'
+      - 'config/shadowrocket-base-template.conf'
       - 'canonical/server-block/**'
 
 permissions:
@@ -41,7 +44,7 @@ jobs:
           echo "a57e8bf545a57e34ec8a1536da7aef18267145c4b01b979aec26ebc4a047f8ca  /tmp/server-domains.txt" | sha256sum -c -
           test "$(wc -l < canonical/server-block/versions/2.5.1/ipv4.txt | tr -d ' ')" = "7"
 
-      - name: Build real client bundle without publishing
+      - name: Build real managed client bundle without publishing
         shell: bash
         run: |
           set -euo pipefail
@@ -49,7 +52,22 @@ jobs:
           echo "SMOKE_RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
           python scripts/client_bundle_orchestrator.py --ru-mode existing --run-id "$RUN_ID"
 
-      - name: Validate Happ and Shadowrocket outputs
+      - name: Build full HAPP and Shadowrocket profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$SMOKE_RUN_ID/output"
+          mkdir -p "$OUT/profiles"
+          python scripts/build_full_client_profiles.py \
+            --version-name 2-5-1 \
+            --managed-shadowrocket "$OUT/shadowrocket-routing.conf" \
+            --server-block-dir canonical/server-block/versions/2.5.1 \
+            --shadow-output "$OUT/profiles/shadowrocket.conf" \
+            --happ-output "$OUT/profiles/happ.txt" \
+            --manifest-output "$OUT/profiles/manifest.json" \
+            --timestamp 1788432000
+
+      - name: Validate managed and full outputs
         shell: bash
         run: |
           set -euo pipefail
@@ -57,8 +75,11 @@ jobs:
           test -s "$OUT/geosite.dat"
           test -s "$OUT/shadowrocket-routing.conf"
           test -s "$OUT/manifest.json"
+          test -s "$OUT/profiles/shadowrocket.conf"
+          test -s "$OUT/profiles/happ.txt"
+          test -s "$OUT/profiles/manifest.json"
           python - <<'PY'
-          import json, os
+          import base64, json, os
           from pathlib import Path
           out = Path('runs/client-bundles') / os.environ['SMOKE_RUN_ID'] / 'output'
           m = json.loads((out/'manifest.json').read_text())
@@ -66,15 +87,38 @@ jobs:
           assert m['server_block_domains'] == 995, m
           assert m['server_block_ipv4'] == 7, m
           assert m['ru_blocked_cleaned'] == 15759, m
-          assert m['runet_source_categories'] >= 1500, m
-          assert m['happ_output_categories'] >= m['runet_source_categories'], m
-          text = (out/'shadowrocket-routing.conf').read_text()
-          assert '[Rule]' in text
-          assert text.index('# ru-blocked-cleaned -> PROXY') < text.index('# SERVER_BLOCK -> DIRECT')
-          assert text.index('DOMAIN,003.su,PROXY') < text.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert m['runet_source_categories'] == 1543, m
+          assert m['happ_output_categories'] == 1545, m
+
+          managed = (out/'shadowrocket-routing.conf').read_text()
+          assert managed.index('DOMAIN,003.su,PROXY') < managed.index('# SERVER_BLOCK -> DIRECT')
+          assert managed.index('# geosite:meta -> PROXY') < managed.index('# SERVER_BLOCK -> DIRECT')
+          assert managed.index('# geosite:telegram -> PROXY') < managed.index('# SERVER_BLOCK -> DIRECT')
+          assert managed.index('# geosite:youtube -> PROXY') < managed.index('# SERVER_BLOCK -> DIRECT')
+          assert managed.index('# SERVER_BLOCK -> DIRECT') < managed.index('# geosite:category-bank-ru -> DIRECT')
+          assert managed.index('# SERVER_BLOCK -> DIRECT') < managed.index('# geosite:category-ru -> DIRECT')
+
+          full = (out/'profiles/shadowrocket.conf').read_text()
+          assert full.startswith('# Shadowrocket: 2-5-1\n# Canonical client policy version: 2-5-1\n')
+          assert 'denylist release 2.4.1' not in full.lower()
+          assert 'sub-kek/shadowrocket-lists' not in full
+          assert full.index('DOMAIN,003.su,PROXY') < full.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert full.index('DOMAIN-SUFFIX,meta.com,PROXY') < full.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert 'FINAL,PROXY' in full
+
+          uri=(out/'profiles/happ.txt').read_text().strip()
+          assert uri.startswith('happ://routing/add/')
+          h=json.loads(base64.b64decode(uri.split('happ://routing/add/',1)[1]).decode())
+          assert h['Name']=='2-5-1'
+          assert h['Geositeurl']=='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/client/geosite.dat'
+          assert h['RouteOrder']=='block-proxy-direct'
+          for x in ('geosite:ru-blocked-cleaned','geosite:meta','geosite:telegram','geosite:youtube'):
+              assert x in h['ProxySites']
+          for x in ('geosite:server-blocklist','geosite:category-bank-ru','geosite:category-ru'):
+              assert x in h['DirectSites']
           for ip in ('104.26.12.205/32','13.248.238.56/32','208.95.112.1/32','213.180.193.115/32','3.33.133.5/32','34.160.111.145/32','99.84.152.115/32'):
-              assert f'IP-CIDR,{ip},DIRECT,no-resolve' in text
-          print(json.dumps(m, indent=2))
+              assert ip in h['DirectIp']
+          print(json.dumps({'managed':m,'happ_name':h['Name'],'happ_direct_sites':len(h['DirectSites']),'happ_proxy_sites':len(h['ProxySites'])},indent=2))
           PY
           git diff --exit-code -- generated/clients
 
