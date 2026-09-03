@@ -141,7 +141,6 @@ func loadPolicy(path string) PolicyProfile {
 }
 
 func convertDomain(d *router.Domain, policy string) string {
-    if len(d.Attribute) != 0 { failf("Shadowrocket conversion cannot preserve geosite attributes for %s", d.Value) }
     switch d.Type {
     case router.Domain_Full:
         return fmt.Sprintf("DOMAIN,%s,%s", d.Value, policy)
