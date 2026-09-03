@@ -1,6 +1,6 @@
 name: Client bundle smoke
 
-# smoke revision 3: builder runs inside temporary Go module
+# smoke revision 4: whole-category geosite attributes preserved as domains
 on:
   push:
     branches:
