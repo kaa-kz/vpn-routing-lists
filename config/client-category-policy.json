@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "categories": [
+    {"name": "category-bank-ru", "policy": "DIRECT"},
+    {"name": "category-ru", "policy": "DIRECT"},
+    {"name": "meta", "policy": "PROXY"},
+    {"name": "telegram", "policy": "PROXY"},
+    {"name": "youtube", "policy": "PROXY"}
+  ]
+}
