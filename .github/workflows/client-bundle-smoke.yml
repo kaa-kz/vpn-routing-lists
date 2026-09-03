@@ -1,6 +1,6 @@
 name: Client bundle smoke
 
-# smoke revision 2: Go dependency bootstrap fixed
+# smoke revision 3: builder runs inside temporary Go module
 on:
   push:
     branches:
