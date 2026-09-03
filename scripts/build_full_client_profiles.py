@@ -17,6 +17,19 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def ordered_unique(values: list[str]) -> tuple[list[str], int]:
+    seen: set[str] = set()
+    out: list[str] = []
+    removed = 0
+    for value in values:
+        if value in seen:
+            removed += 1
+            continue
+        seen.add(value)
+        out.append(value)
+    return out, removed
+
+
 def rule_policy(line: str) -> str | None:
     if line.startswith("[") or not line or line.startswith("#"):
         return None
@@ -45,7 +58,6 @@ def load_managed_rules(path: Path) -> tuple[list[str], list[str], dict]:
             proxy_raw.append(line)
         elif policy == "DIRECT":
             direct_raw.append(line)
-
     if not proxy_raw or not direct_raw:
         fail("managed Shadowrocket rules must contain both PROXY and DIRECT rules")
 
@@ -160,22 +172,27 @@ def build_happ(template_path: Path, server_dir: Path, version_name: str, output:
     required_direct = ["geosite:server-blocklist", "geosite:category-bank-ru", "geosite:category-ru"]
     required_proxy = ["geosite:ru-blocked-cleaned", "geosite:meta", "geosite:telegram", "geosite:youtube"]
     for v in reversed(required_direct):
-        if v in obj["DirectSites"]:
+        while v in obj["DirectSites"]:
             obj["DirectSites"].remove(v)
         obj["DirectSites"].insert(0, v)
     for v in reversed(required_proxy):
-        if v in obj["ProxySites"]:
+        while v in obj["ProxySites"]:
             obj["ProxySites"].remove(v)
         obj["ProxySites"].insert(0, v)
+
+    obj["DirectSites"], removed_direct_sites = ordered_unique(obj["DirectSites"])
+    obj["ProxySites"], removed_proxy_sites = ordered_unique(obj["ProxySites"])
+    obj["DirectIp"], removed_direct_ip = ordered_unique(obj["DirectIp"])
+    obj["ProxyIp"], removed_proxy_ip = ordered_unique(obj["ProxyIp"])
 
     if obj.get("RouteOrder") != "block-proxy-direct":
         fail("HAPP RouteOrder must be block-proxy-direct")
     if len(set(obj["DirectSites"])) != len(obj["DirectSites"]):
-        fail("duplicate HAPP DirectSites entries")
+        fail("duplicate HAPP DirectSites entries after normalization")
     if len(set(obj["ProxySites"])) != len(obj["ProxySites"]):
-        fail("duplicate HAPP ProxySites entries")
+        fail("duplicate HAPP ProxySites entries after normalization")
     if len(set(obj["DirectIp"])) != len(obj["DirectIp"]):
-        fail("duplicate HAPP DirectIp entries")
+        fail("duplicate HAPP DirectIp entries after normalization")
 
     payload = json.dumps(obj, ensure_ascii=False, indent=4, sort_keys=False).encode("utf-8")
     uri = "happ://routing/add/" + base64.b64encode(payload).decode("ascii") + "\n"
@@ -193,6 +210,12 @@ def build_happ(template_path: Path, server_dir: Path, version_name: str, output:
         "proxy_sites": len(check["ProxySites"]),
         "direct_ip": len(check["DirectIp"]),
         "proxy_ip": len(check["ProxyIp"]),
+        "dedupe": {
+            "direct_sites_removed": removed_direct_sites,
+            "proxy_sites_removed": removed_proxy_sites,
+            "direct_ip_removed": removed_direct_ip,
+            "proxy_ip_removed": removed_proxy_ip,
+        },
         "sha256": sha256(output),
         "bytes": output.stat().st_size,
     }
