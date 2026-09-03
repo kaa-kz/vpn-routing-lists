@@ -132,6 +132,7 @@ def run_go_builder(run: Path, runet: Path, ru: Path, server_dir: Path, policy: P
         "  google.golang.org/protobuf v1.36.12\n)\n",
         encoding="utf-8",
     )
+    subprocess.run(["go", "mod", "download"], cwd=module_dir, check=True)
     cmd = [
         "go", "run", str(GO_BUILDER),
         "--runet-geosite", str(runet),
