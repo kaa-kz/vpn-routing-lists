@@ -1,5 +1,6 @@
 name: Client bundle smoke
 
+# smoke revision 2: Go dependency bootstrap fixed
 on:
   push:
     branches:
