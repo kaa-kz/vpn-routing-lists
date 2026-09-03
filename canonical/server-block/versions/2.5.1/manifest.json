@@ -1,0 +1,15 @@
+{
+  "name": "SERVER_BLOCK",
+  "version": "2.5.1",
+  "domain_suffix_count": 995,
+  "ipv4_cidr_count": 7,
+  "total_rules": 1002,
+  "domain_source_sha256": "a57e8bf545a57e34ec8a1536da7aef18267145c4b01b979aec26ebc4a047f8ca",
+  "domain_parts": [
+    "domains-01.txt",
+    "domains-02.txt",
+    "domains-03.txt",
+    "domains-04.txt"
+  ],
+  "ipv4_file": "ipv4.txt"
+}
