@@ -1,0 +1,8 @@
+RU-BLOCKED-CLEANED BACKUP
+version=2026-09-11_v1
+created_date=2026-09-11
+state=PRE_MEDIA_DOMAIN_MERGE
+source_path=generated/final/ru-blocked-server-allow.cleaned.txt
+hostname_count=15759
+sha256=1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6
+reason=backup before adding 9 manually validated media .ru domains

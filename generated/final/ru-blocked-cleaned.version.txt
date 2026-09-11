@@ -1,0 +1,10 @@
+RU-BLOCKED-CLEANED CURRENT
+version=2026-09-11_v2
+updated_date=2026-09-11
+hostname_count=15768
+sha256=c58d351c0d7bc78f4af71cb6f5d724728d2bda578d0a15a456530e265e2a6956
+previous_backup=backups/ru-blocked-cleaned/2026-09-11_v1/ru-blocked-cleaned-15759.txt
+client_artifacts_status=NOT_REBUILT
+requested_domains=zonafilm.ru,lord-film.ru,kinogo.ru,hdrezka.ru,filmix.ru,gidonline.ru,lordfilm.ru,kinobar.ru,kinogo-net.ru
+newly_added=zonafilm.ru,lord-film.ru,kinogo.ru,hdrezka.ru,filmix.ru,gidonline.ru,lordfilm.ru,kinobar.ru,kinogo-net.ru
+already_present=
