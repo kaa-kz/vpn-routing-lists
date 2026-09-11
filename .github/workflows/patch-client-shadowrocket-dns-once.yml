@@ -1,0 +1,35 @@
+name: Patch published Shadowrocket DNS once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/patch-client-shadowrocket-dns-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client
+          fetch-depth: 0
+      - name: Restore preserved DNS settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's#^dns-server = .*#dns-server = system#' shadowrocket.conf
+          sed -i 's#^fallback-dns-server = .*#fallback-dns-server = system#' shadowrocket.conf
+          grep -q '^# Shadowrocket: 2.6.0$' shadowrocket.conf
+          grep -q '^dns-server = system$' shadowrocket.conf
+          grep -q '^fallback-dns-server = system$' shadowrocket.conf
+          grep -q '^DOMAIN-SUFFIX,zonafilm.ru,PROXY$' shadowrocket.conf
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add shadowrocket.conf
+          git commit -m 'Restore Shadowrocket system DNS for 2.6.0'
+          git push origin HEAD:client
