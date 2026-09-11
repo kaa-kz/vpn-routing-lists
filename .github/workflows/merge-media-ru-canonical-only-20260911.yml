@@ -1,0 +1,131 @@
+name: Merge media RU into canonical cleaned list only 2026-09-11
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/merge-media-ru-canonical-only-20260911.yml
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Backup and merge canonical list only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          canonical = Path('generated/final/ru-blocked-server-allow.cleaned.txt')
+          backup_dir = Path('backups/ru-blocked-cleaned/2026-09-11_v1')
+          backup = backup_dir / 'ru-blocked-cleaned-15759.txt'
+          backup_manifest = backup_dir / 'manifest.txt'
+          version_file = Path('generated/final/ru-blocked-cleaned.version.txt')
+
+          expected_old_count = 15759
+          expected_old_sha = '1ed42c3c9a577c6ceb0cbc276e3a903033c08e8f43d66dbcf3c5a8583e2531c6'
+          additions = [
+              'zonafilm.ru',
+              'lord-film.ru',
+              'kinogo.ru',
+              'hdrezka.ru',
+              'filmix.ru',
+              'gidonline.ru',
+              'lordfilm.ru',
+              'kinobar.ru',
+              'kinogo-net.ru',
+          ]
+
+          raw = canonical.read_bytes()
+          old_sha = hashlib.sha256(raw).hexdigest()
+          old_items = [x.strip() for x in raw.decode('utf-8').splitlines() if x.strip()]
+          if len(old_items) != expected_old_count:
+              raise SystemExit(f'old count mismatch: {len(old_items)} != {expected_old_count}')
+          if old_sha != expected_old_sha:
+              raise SystemExit(f'old sha mismatch: {old_sha} != {expected_old_sha}')
+          if len(old_items) != len(set(old_items)):
+              raise SystemExit('canonical source has duplicates before merge')
+
+          backup_dir.mkdir(parents=True, exist_ok=True)
+          if backup.exists():
+              raise SystemExit(f'backup already exists: {backup}')
+          backup.write_bytes(raw)
+          backup_manifest.write_text(
+              '\n'.join([
+                  'RU-BLOCKED-CLEANED BACKUP',
+                  'version=2026-09-11_v1',
+                  'created_date=2026-09-11',
+                  'state=PRE_MEDIA_DOMAIN_MERGE',
+                  f'source_path={canonical.as_posix()}',
+                  f'hostname_count={len(old_items)}',
+                  f'sha256={old_sha}',
+                  'reason=backup before adding 9 manually validated media .ru domains',
+                  '',
+              ]), encoding='utf-8')
+
+          old_set = set(old_items)
+          already_present = [d for d in additions if d in old_set]
+          newly_added = [d for d in additions if d not in old_set]
+          merged = sorted(old_set | set(additions))
+          canonical.write_text('\n'.join(merged) + '\n', encoding='utf-8')
+
+          new_raw = canonical.read_bytes()
+          new_sha = hashlib.sha256(new_raw).hexdigest()
+          new_count = len(merged)
+          version_file.write_text(
+              '\n'.join([
+                  'RU-BLOCKED-CLEANED CURRENT',
+                  'version=2026-09-11_v2',
+                  'updated_date=2026-09-11',
+                  f'hostname_count={new_count}',
+                  f'sha256={new_sha}',
+                  f'previous_backup={backup.as_posix()}',
+                  'client_artifacts_status=NOT_REBUILT',
+                  'requested_domains=' + ','.join(additions),
+                  'newly_added=' + ','.join(newly_added),
+                  'already_present=' + ','.join(already_present),
+                  '',
+              ]), encoding='utf-8')
+
+          wrong = Path('config/server-allow-media-ru.txt')
+          if wrong.exists():
+              wrong.unlink()
+
+          print(f'old_count={len(old_items)}')
+          print(f'old_sha256={old_sha}')
+          print(f'new_count={new_count}')
+          print(f'new_sha256={new_sha}')
+          print('newly_added=' + ','.join(newly_added))
+          print('already_present=' + ','.join(already_present))
+          print('client_artifacts_status=NOT_REBUILT')
+          PY
+
+      - name: Commit canonical update and backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add generated/final/ru-blocked-server-allow.cleaned.txt
+          git add generated/final/ru-blocked-cleaned.version.txt
+          git add backups/ru-blocked-cleaned/2026-09-11_v1
+          git add -A config/server-allow-media-ru.txt || true
+          git status --short
+          git commit -m "Merge 9 media RU domains into ru-blocked-cleaned"
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
