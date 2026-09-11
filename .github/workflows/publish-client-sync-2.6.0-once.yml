@@ -1,0 +1,144 @@
+name: Publish synchronized client profiles 2.6.0 once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/publish-client-sync-2.6.0-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+
+      - name: Preflight canonical cleaned list
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/final/ru-blocked-server-allow.cleaned.txt?sha=${GITHUB_SHA}"
+          curl -fsSL "$URL" -o /tmp/ru-blocked-cleaned.txt
+          python - <<'PY'
+          from pathlib import Path
+          raw=Path('/tmp/ru-blocked-cleaned.txt').read_text(encoding='utf-8')
+          lines=[x.strip() for x in raw.splitlines() if x.strip()]
+          assert len(lines)==15767, len(lines)
+          assert len(set(lines))==15767, len(set(lines))
+          for x in ('lord-film.ru','kinogo.ru','hdrezka.ru','filmix.ru','gidonline.ru','lordfilm.ru','kinobar.ru','kinogo-net.ru'):
+              assert x in lines, x
+          assert 'zonafilm.ru' not in lines
+          assert 'kinokrad.ru' not in lines
+          local=[x.strip() for x in Path('generated/final/ru-blocked-server-allow.cleaned.txt').read_text(encoding='utf-8').splitlines() if x.strip()]
+          assert lines==local
+          print('PREFLIGHT_OK 15767/15767')
+          PY
+
+      - name: Build managed bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --run-id "$RUN_ID"
+          OUT="runs/client-bundles/$RUN_ID/output"
+          test -s "$OUT/geosite.dat"
+          test -s "$OUT/shadowrocket-routing.conf"
+
+      - name: Build synchronized full profiles 2.6.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          mkdir -p "$OUT/sync"
+          python scripts/build_full_client_profiles.py \
+            --version-name 2.6.0 \
+            --managed-shadowrocket "$OUT/shadowrocket-routing.conf" \
+            --server-block-dir canonical/server-block/versions/2.5.1 \
+            --manual-policy config/client-manual-common.json \
+            --shadow-output "$OUT/sync/shadowrocket.conf" \
+            --happ-output "$OUT/sync/happ.txt" \
+            --manifest-output "$OUT/sync/manifest.json"
+          cp "$OUT/geosite.dat" "$OUT/sync/geosite.dat"
+
+      - name: Validate synchronized release
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output/sync"
+          python - <<'PY'
+          import base64,json,os
+          from pathlib import Path
+          out=Path('runs/client-bundles')/os.environ['RUN_ID']/'output'/'sync'
+          m=json.loads((out/'manifest.json').read_text())
+          assert m['version']=='2.6.0',m
+          assert m['shadowrocket']['manual_source_rules']==584,m
+          assert m['shared_manual']['emitted']>0,m
+          sh=(out/'shadowrocket.conf').read_text()
+          assert sh.startswith('# Shadowrocket: 2.6.0\n# Canonical client policy version: 2.6.0\n')
+          assert 'DOMAIN-SUFFIX,zonafilm.ru,PROXY' in sh
+          assert sh.index('DOMAIN-SUFFIX,zonafilm.ru,PROXY') < sh.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert 'DOMAIN-SUFFIX,dnscheck.tools,DIRECT' in sh
+          assert 'DOMAIN-SUFFIX,dnscheck.tool,DIRECT' not in sh
+          assert 'DOMAIN-SUFFIX,addr.tools,DIRECT' in sh
+          uri=(out/'happ.txt').read_text().strip()
+          assert uri.startswith('happ://routing/add/')
+          h=json.loads(base64.b64decode(uri.split('happ://routing/add/',1)[1]).decode())
+          assert h['Name']=='2.6.0'
+          assert 'domain:zonafilm.ru' in h['ProxySites']
+          assert 'domain:dnscheck.tools' in h['DirectSites']
+          assert 'domain:dnscheck.tool' not in h['DirectSites']
+          assert 'domain:addr.tools' in h['DirectSites']
+          assert h['Geositeurl']=='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/client/geosite.dat'
+          print(json.dumps(m,indent=2))
+          PY
+
+      - name: Stage stable files
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output/sync"
+          cp "$OUT/geosite.dat" /tmp/geosite.dat
+          cp "$OUT/happ.txt" /tmp/happ.txt
+          cp "$OUT/shadowrocket.conf" /tmp/shadowrocket.conf
+          cp "$OUT/manifest.json" /tmp/sync-manifest.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-sync-2.6.0-${{ github.run_id }}
+          path: |
+            /tmp/geosite.dat
+            /tmp/happ.txt
+            /tmp/shadowrocket.conf
+            /tmp/sync-manifest.json
+          retention-days: 14
+
+      - name: Publish same stable client URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan client-sync-publish
+          git rm -rf .
+          cp /tmp/geosite.dat ./geosite.dat
+          cp /tmp/happ.txt ./happ.txt
+          cp /tmp/shadowrocket.conf ./shadowrocket.conf
+          git add geosite.dat happ.txt shadowrocket.conf
+          git commit -m 'Publish synchronized client routing profiles 2.6.0'
+          git push --force origin HEAD:client
