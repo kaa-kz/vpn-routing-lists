@@ -1,0 +1,76 @@
+name: Check RU media hostnames (manual set)
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - .github/workflows/check-media-ru-manual.yml
+      - generated/manual-check/media-ru-2026-09-11.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout technical branch
+        uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp dnspython
+
+      - name: Run small hostname scan
+        run: |
+          python scripts/check_hostnames.py \
+            --input generated/manual-check/media-ru-2026-09-11.txt \
+            --output-dir generated/manual-check/results-2026-09-11 \
+            --state-dir state/manual-check/media-ru-2026-09-11 \
+            --expected-count 10 \
+            --concurrency 10 \
+            --dns-timeout 2.5 \
+            --dns-hard-timeout 5 \
+            --http-connect-timeout 3 \
+            --http-total-timeout 8 \
+            --hostname-hard-timeout 35 \
+            --max-redirects 10 \
+            --progress-every 1 \
+            --heartbeat-seconds 15 \
+            --watchdog-seconds 90 \
+            --checkpoint-every 10 \
+            --checkpoint-seconds 120 \
+            --soft-limit-seconds 420
+
+      - name: Print classification
+        if: always()
+        run: |
+          echo '=== LIVE WEB ==='
+          cat generated/manual-check/results-2026-09-11/01_LIVE_WEB.txt 2>/dev/null || true
+          echo '=== DNS ALIVE / WEB DEAD ==='
+          cat generated/manual-check/results-2026-09-11/02_DNS_ALIVE_WEB_DEAD.txt 2>/dev/null || true
+          echo '=== NXDOMAIN DEAD ==='
+          cat generated/manual-check/results-2026-09-11/03_NXDOMAIN_DEAD.txt 2>/dev/null || true
+          echo '=== UNCERTAIN ==='
+          cat generated/manual-check/results-2026-09-11/04_UNCERTAIN_RECHECK.txt 2>/dev/null || true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-ru-domain-check-2026-09-11
+          retention-days: 30
+          path: |
+            generated/manual-check/results-2026-09-11/
+            state/manual-check/media-ru-2026-09-11/
