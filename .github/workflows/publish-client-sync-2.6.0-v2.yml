@@ -1,0 +1,109 @@
+name: Publish synchronized client profiles 2.6.0 v2
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/publish-client-sync-2.6.0-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+      - name: Build managed bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --run-id "$RUN_ID"
+      - name: Build synchronized profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          mkdir -p "$OUT/sync"
+          python scripts/build_full_client_profiles.py \
+            --version-name 2.6.0 \
+            --managed-shadowrocket "$OUT/shadowrocket-routing.conf" \
+            --server-block-dir canonical/server-block/versions/2.5.1 \
+            --manual-policy config/client-manual-common.json \
+            --shadow-output "$OUT/sync/shadowrocket.conf" \
+            --happ-output "$OUT/sync/happ.txt" \
+            --manifest-output "$OUT/sync/manifest.json"
+          cp "$OUT/geosite.dat" "$OUT/sync/geosite.dat"
+      - name: Validate semantic parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,json,os
+          from pathlib import Path
+          out=Path('runs/client-bundles')/os.environ['RUN_ID']/'output'/'sync'
+          m=json.loads((out/'manifest.json').read_text())
+          assert m['version']=='2.6.0'
+          sh=(out/'shadowrocket.conf').read_text()
+          assert sh.startswith('# Shadowrocket: 2.6.0\n# Canonical client policy version: 2.6.0\n')
+          assert 'DOMAIN-SUFFIX,zonafilm.ru,PROXY' in sh
+          assert sh.index('DOMAIN-SUFFIX,zonafilm.ru,PROXY') < sh.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert 'RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Netflix/Netflix.list,PROXY' in sh
+          assert 'DOMAIN-SUFFIX,dnscheck.tools,DIRECT' in sh
+          assert 'DOMAIN-SUFFIX,addr.tools,DIRECT' in sh
+          uri=(out/'happ.txt').read_text().strip()
+          h=json.loads(base64.b64decode(uri.split('happ://routing/add/',1)[1]).decode())
+          assert h['Name']=='2.6.0'
+          assert 'domain:zonafilm.ru' in h['ProxySites']
+          assert 'geosite:netflix' in h['ProxySites']
+          assert 'geoip:netflix' in h['ProxyIp']
+          assert 'domain:dnscheck.tools' in h['DirectSites']
+          assert 'domain:addr.tools' in h['DirectSites']
+          assert h['Geositeurl']=='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/client/geosite.dat'
+          print(json.dumps(m,indent=2))
+          PY
+      - name: Stage release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output/sync"
+          cp "$OUT/geosite.dat" /tmp/geosite.dat
+          cp "$OUT/happ.txt" /tmp/happ.txt
+          cp "$OUT/shadowrocket.conf" /tmp/shadowrocket.conf
+          cp "$OUT/manifest.json" /tmp/sync-manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-sync-2.6.0-${{ github.run_id }}
+          path: |
+            /tmp/geosite.dat
+            /tmp/happ.txt
+            /tmp/shadowrocket.conf
+            /tmp/sync-manifest.json
+          retention-days: 14
+      - name: Publish stable client files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan client-sync-publish
+          git rm -rf .
+          cp /tmp/geosite.dat ./geosite.dat
+          cp /tmp/happ.txt ./happ.txt
+          cp /tmp/shadowrocket.conf ./shadowrocket.conf
+          git add geosite.dat happ.txt shadowrocket.conf
+          git commit -m 'Publish synchronized client routing profiles 2.6.0'
+          git push --force origin HEAD:client
