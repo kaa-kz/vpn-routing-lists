@@ -32,8 +32,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          URL='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/final/ru-blocked-server-allow.cleaned.txt'
-          curl -fsSL "$URL" -o /tmp/ru-blocked-cleaned.txt
+          BASE='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/final/ru-blocked-server-allow.cleaned.txt'
+          URL="${BASE}?rev=${GITHUB_SHA}"
+          curl -fsSL -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$URL" -o /tmp/ru-blocked-cleaned.txt
           python - <<'PY'
           from pathlib import Path
           raw = Path('/tmp/ru-blocked-cleaned.txt').read_text(encoding='utf-8')
@@ -145,4 +146,4 @@ jobs:
           git commit -m 'Publish client routing release 2.6.0'
           git push --force origin HEAD:client
 
-# rerun-after-canonical-15767
+# cache-busted-preflight-current-commit
