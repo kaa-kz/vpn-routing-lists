@@ -22,12 +22,15 @@
     "GlobalProxy": "true",
     "LastUpdated": 0,
     "Name": "__VERSION__",
-    "ProxyIp": [],
+    "ProxyIp": [
+        "geoip:netflix"
+    ],
     "ProxySites": [
         "geosite:ru-blocked-cleaned",
         "geosite:meta",
         "geosite:telegram",
-        "geosite:youtube"
+        "geosite:youtube",
+        "geosite:netflix"
     ],
     "RemoteDNSDomain": "https://freedns.controld.com/p0",
     "RemoteDNSIP": "76.76.2.11",
