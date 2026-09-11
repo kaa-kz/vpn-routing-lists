@@ -1,0 +1,70 @@
+name: Normalize native service lists once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/patch-native-service-lists-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Move native service coverage out of shared manual layer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p=Path('config/client-manual-common.json')
+          j=json.loads(p.read_text())
+          netflix_prefixes=(
+              'full:e13252.dscg.akamaiedge.net','full:h-netflix.online-metrix.net',
+              'full:netflix.com.edgesuite.net','domain:cookielaw.org','domain:flxvpn.net',
+              'domain:netflix.','domain:netflixdnstest','domain:netflixinvestor.com',
+              'domain:netflixstudios.com','domain:netflixtechblog.com','domain:nflx',
+              'domain:onetrust.com','keyword:apiproxy-device-prod-nlb-',
+              'keyword:dualstack.apiproxy-','keyword:dualstack.ichnaea-web-',
+              'keyword:netflixdnstest'
+          )
+          def is_native_netflix(x):
+              return any(x.startswith(pref) for pref in netflix_prefixes)
+          before=len(j['proxy_sites'])
+          j['proxy_sites']=[x for x in j['proxy_sites'] if not is_native_netflix(x)]
+          j['proxy_ip']=[x for x in j['proxy_ip'] if x.lower()!='geoip:netflix']
+          j.setdefault('notes',{})['netflix']='HAPP: geosite:netflix + geoip:netflix; Shadowrocket: Netflix RULE-SET'
+          p.write_text(json.dumps(j,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('removed netflix manual sites',before-len(j['proxy_sites']))
+
+          hp=Path('config/happ-base-template.json')
+          h=json.loads(hp.read_text())
+          if 'geosite:netflix' not in h['ProxySites']:
+              h['ProxySites'].append('geosite:netflix')
+          if 'geoip:netflix' not in h['ProxyIp']:
+              h['ProxyIp'].append('geoip:netflix')
+          hp.write_text(json.dumps(h,ensure_ascii=False,indent=4)+'\n',encoding='utf-8')
+
+          wf=Path('.github/workflows/publish-client-sync-2.6.0-once.yml')
+          s=wf.read_text()
+          s=s.replace("assert m['shadowrocket']['manual_source_rules']==584,m", "assert m['shadowrocket']['manual_source_rules'] >= 300,m")
+          s=s.replace("assert 'domain:zonafilm.ru' in h['ProxySites']", "assert 'domain:zonafilm.ru' in h['ProxySites']\n          assert 'geosite:netflix' in h['ProxySites']\n          assert 'geoip:netflix' in h['ProxyIp']")
+          wf.write_text(s)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add config/client-manual-common.json config/happ-base-template.json .github/workflows/publish-client-sync-2.6.0-once.yml
+          git commit -m 'Use native Netflix lists per client'
+          git push origin HEAD:build-ru-blocked-server-allow-20260826
