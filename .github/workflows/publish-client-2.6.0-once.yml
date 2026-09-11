@@ -144,3 +144,5 @@ jobs:
           git add geosite.dat happ.txt shadowrocket.conf
           git commit -m 'Publish client routing release 2.6.0'
           git push --force origin HEAD:client
+
+# rerun-after-canonical-15767
