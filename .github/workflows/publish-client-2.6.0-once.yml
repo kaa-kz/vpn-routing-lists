@@ -1,0 +1,146 @@
+name: Publish client profiles 2.6.0 once
+
+on:
+  push:
+    branches:
+      - build-ru-blocked-server-allow-20260826
+    paths:
+      - '.github/workflows/publish-client-2.6.0-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+
+      - name: Preflight canonical ru-blocked-cleaned 2.6.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/final/ru-blocked-server-allow.cleaned.txt'
+          curl -fsSL "$URL" -o /tmp/ru-blocked-cleaned.txt
+          python - <<'PY'
+          from pathlib import Path
+          raw = Path('/tmp/ru-blocked-cleaned.txt').read_text(encoding='utf-8')
+          lines = [x.strip() for x in raw.splitlines() if x.strip()]
+          assert len(lines) == 15767, f'line count={len(lines)}'
+          assert len(set(lines)) == 15767, f'unique={len(set(lines))}'
+          required = {
+              'lord-film.ru','kinogo.ru','hdrezka.ru','filmix.ru',
+              'gidonline.ru','lordfilm.ru','kinobar.ru','kinogo-net.ru'
+          }
+          missing = sorted(required - set(lines))
+          assert not missing, f'missing required domains: {missing}'
+          assert 'zonafilm.ru' not in lines, 'zonafilm.ru must be absent'
+          assert 'kinokrad.ru' not in lines, 'kinokrad.ru must be absent'
+          local = Path('generated/final/ru-blocked-server-allow.cleaned.txt').read_text(encoding='utf-8')
+          local_lines = [x.strip() for x in local.splitlines() if x.strip()]
+          assert lines == local_lines, 'raw canonical differs from checked-out canonical'
+          print('PREFLIGHT_OK lines=15767 unique=15767 required=8 zonafilm=absent kinokrad=absent')
+          PY
+
+      - name: Build managed client bundle from canonical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="release-260-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --server-version 2.5.1 --run-id "$RUN_ID"
+
+      - name: Build full client profiles as 2.6.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          cp scripts/build_full_client_profiles.py /tmp/build_full_client_profiles_260.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/build_full_client_profiles_260.py')
+          s=p.read_text(encoding='utf-8')
+          old='''    expected_name = server_version.replace(".", "-")\n    if version_name != expected_name:\n        fail(f"HAPP version name {version_name!r} does not match SERVER_BLOCK {server_version!r}")\n'''
+          if old not in s:
+              raise SystemExit('expected HAPP/server version coupling block not found')
+          s=s.replace(old, '    # Client release version is independent from SERVER_BLOCK data version.\n')
+          p.write_text(s, encoding='utf-8')
+          PY
+          python /tmp/build_full_client_profiles_260.py \
+            --version-name 2.6.0 \
+            --managed-shadowrocket "$OUT/shadowrocket-routing.conf" \
+            --server-block-dir canonical/server-block/versions/2.5.1 \
+            --shadow-template config/shadowrocket-base-template.conf \
+            --happ-template config/happ-base-template.json \
+            --shadow-output "$OUT/shadowrocket-2.6.0.conf" \
+            --happ-output "$OUT/happ-2.6.0.txt" \
+            --manifest-output "$OUT/profile-2.6.0-manifest.json"
+
+      - name: Validate release 2.6.0 before publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          python - <<'PY'
+          import base64, json, os
+          from pathlib import Path
+          out=Path('runs/client-bundles')/os.environ['RUN_ID']/ 'output'
+          managed=json.loads((out/'manifest.json').read_text())
+          assert managed['server_block_version']=='2.5.1', managed
+          assert managed['server_block_domains']==995, managed
+          assert managed['server_block_ipv4']==7, managed
+          assert managed['ru_blocked_cleaned']==15767, managed
+          assert managed['happ_output_categories']==1545, managed
+
+          s=(out/'shadowrocket-2.6.0.conf').read_text()
+          assert s.startswith('# Shadowrocket: 2.6.0\n# Canonical client policy version: 2.6.0\n')
+          for d in ('lord-film.ru','kinogo.ru','hdrezka.ru','filmix.ru','gidonline.ru','lordfilm.ru','kinobar.ru','kinogo-net.ru'):
+              assert f'DOMAIN,{d},PROXY' in s, d
+          assert 'DOMAIN,zonafilm.ru,PROXY' not in s
+          assert 'DOMAIN,kinokrad.ru,PROXY' not in s
+          assert s.index('DOMAIN,lord-film.ru,PROXY') < s.index('DOMAIN-SUFFIX,ru,DIRECT')
+          assert 'FINAL,PROXY' in s
+
+          uri=(out/'happ-2.6.0.txt').read_text().strip()
+          assert uri.startswith('happ://routing/add/')
+          h=json.loads(base64.b64decode(uri.split('happ://routing/add/',1)[1]).decode())
+          assert h['Name']=='2.6.0', h['Name']
+          assert h['Geositeurl']=='https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/client/geosite.dat'
+          assert h['RouteOrder']=='block-proxy-direct'
+          assert 'geosite:ru-blocked-cleaned' in h['ProxySites']
+          assert 'geosite:server-blocklist' in h['DirectSites']
+          for ip in ('104.26.12.205/32','13.248.238.56/32','208.95.112.1/32','213.180.193.115/32','3.33.133.5/32','34.160.111.145/32','99.84.152.115/32'):
+              assert ip in h['DirectIp']
+          print('RELEASE_VALIDATION_OK version=2.6.0 ru=15767 server_block=2.5.1')
+          PY
+
+      - name: Publish same stable client URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          cp "$OUT/geosite.dat" /tmp/geosite.dat
+          cp "$OUT/happ-2.6.0.txt" /tmp/happ.txt
+          cp "$OUT/shadowrocket-2.6.0.conf" /tmp/shadowrocket.conf
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan client-publish
+          git rm -rf .
+          cp /tmp/geosite.dat ./geosite.dat
+          cp /tmp/happ.txt ./happ.txt
+          cp /tmp/shadowrocket.conf ./shadowrocket.conf
+          git add geosite.dat happ.txt shadowrocket.conf
+          git commit -m 'Publish client routing release 2.6.0'
+          git push --force origin HEAD:client
