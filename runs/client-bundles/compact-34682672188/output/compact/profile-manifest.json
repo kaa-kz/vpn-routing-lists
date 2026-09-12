@@ -1,0 +1,11 @@
+{
+  "version": "2.6.0",
+  "architecture": "compact-rule-set",
+  "shadowrocket_lines": 368,
+  "manual_source": 546,
+  "manual_emitted": 302,
+  "manual_covered": 244,
+  "manual_overridden": 0,
+  "server_block_version": "2.5.1",
+  "explicit_zonafilm": false
+}

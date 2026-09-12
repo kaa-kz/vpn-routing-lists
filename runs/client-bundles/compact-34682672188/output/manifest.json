@@ -1,0 +1,44 @@
+{
+  "server_block_version": "2.5.1",
+  "server_block_domains": 995,
+  "server_block_ipv4": 7,
+  "ru_blocked_cleaned": 15767,
+  "runet_source_categories": 1543,
+  "happ_output_categories": 1545,
+  "happ_sha256": "8e1177acad1be500d463b6124f69beda31392d2421f873e3dc2c992baee1a7e1",
+  "shadowrocket_sha256": "d8feaf75c7bda9d4f2e07b86f2fa795340bef4bc94385b415240d0e7e5fc55ec",
+  "shadowrocket_rule_count": 18938,
+  "runet_category_rule_counts": {
+    "category-bank-ru": 313,
+    "category-ru": 1103,
+    "meta": 554,
+    "telegram": 21,
+    "youtube": 178
+  },
+  "runet_category_policies": [
+    {
+      "name": "META",
+      "policy": "PROXY"
+    },
+    {
+      "name": "TELEGRAM",
+      "policy": "PROXY"
+    },
+    {
+      "name": "YOUTUBE",
+      "policy": "PROXY"
+    },
+    {
+      "name": "CATEGORY-BANK-RU",
+      "policy": "DIRECT"
+    },
+    {
+      "name": "CATEGORY-RU",
+      "policy": "DIRECT"
+    }
+  ],
+  "happ_custom_categories": [
+    "RU-BLOCKED-CLEANED",
+    "SERVER-BLOCKLIST"
+  ]
+}
