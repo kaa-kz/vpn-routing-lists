@@ -1,0 +1,97 @@
+name: Publish compact client 2.6.0
+on:
+  push:
+    branches: [build-ru-blocked-server-allow-20260826]
+    paths: ['.github/workflows/publish-compact-2.6.0.yml']
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build-ru-blocked-server-allow-20260826
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.12'
+          cache: false
+      - name: Preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://raw.githubusercontent.com/kaa-kz/vpn-routing-lists/build-ru-blocked-server-allow-20260826/generated/final/ru-blocked-server-allow.cleaned.txt?sha=${GITHUB_SHA}" -o /tmp/ru.txt
+          python - <<'PY'
+          from pathlib import Path
+          x=[s.strip() for s in Path('/tmp/ru.txt').read_text().splitlines() if s.strip()]
+          y=[s.strip() for s in Path('generated/final/ru-blocked-server-allow.cleaned.txt').read_text().splitlines() if s.strip()]
+          assert x==y and len(x)==15767 and len(set(x))==15767 and 'zonafilm.ru' not in x and 'kinokrad.ru' not in x
+          print('PREFLIGHT_OK',len(x))
+          PY
+      - name: Build managed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="compact-${GITHUB_RUN_ID}"
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          python scripts/client_bundle_orchestrator.py --ru-mode existing --run-id "$RUN_ID"
+      - name: Build compact release
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          python scripts/build_shadowrocket_rulesets.py --managed "$OUT/shadowrocket-routing.conf" --output-dir "$OUT/rulesets" --manifest-output "$OUT/rulesets-manifest.json"
+          python scripts/build_compact_release.py --managed "$OUT/shadowrocket-routing.conf" --out "$OUT/compact"
+          cp "$OUT/geosite.dat" "$OUT/compact/geosite.dat"
+      - name: Validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          python - <<'PY'
+          import base64,json,os
+          from pathlib import Path
+          o=Path('runs/client-bundles')/os.environ['RUN_ID']/'output'
+          s=(o/'compact/shadowrocket.conf').read_text()
+          assert s.startswith('# Shadowrocket: 2.6.0\n# Canonical client policy version: 2.6.0\n')
+          assert 'zonafilm.ru' not in s.lower() and len(s.splitlines())<2000
+          assert s.count('RULE-SET,')==8
+          h=json.loads(base64.b64decode((o/'compact/happ.txt').read_text().strip().split('happ://routing/add/',1)[1]).decode())
+          assert h['Name']=='2.6.0' and h['RouteOrder']=='block-proxy-direct'
+          assert not any('zonafilm.ru' in x.lower() for x in h['ProxySites']+h['DirectSites'])
+          for x in ('geosite:ru-blocked-cleaned','geosite:meta','geosite:telegram','geosite:youtube','geosite:netflix'): assert x in h['ProxySites']
+          for x in ('geosite:server-blocklist','geosite:category-bank-ru','geosite:category-ru'): assert x in h['DirectSites']
+          r=json.loads((o/'rulesets-manifest.json').read_text())
+          assert r['files']['ru-blocked-cleaned.list']['rules']==15767
+          assert r['files']['server-blocklist.list']['rules']==1002
+          print('VALIDATION_OK',len(s.splitlines()))
+          PY
+      - name: Stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="runs/client-bundles/$RUN_ID/output"
+          mkdir -p /tmp/release
+          cp "$OUT/compact/geosite.dat" "$OUT/compact/happ.txt" "$OUT/compact/shadowrocket.conf" /tmp/release/
+          cp "$OUT/rulesets/"*.list /tmp/release/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compact-client-2.6.0-${{ github.run_id }}
+          path: /tmp/release/*
+          retention-days: 14
+      - name: Publish stable URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout --orphan compact-client-release
+          git rm -rf .
+          cp /tmp/release/* .
+          git add .
+          git commit -m 'Publish compact client profiles 2.6.0'
+          git push --force origin HEAD:client
